@@ -14,7 +14,7 @@ app.secret_key = os.urandom(24) # For session management
 # Initialize Groq client
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
-DATABASE = 'database.db'
+DATABASE = os.environ.get('DB_PATH', 'database.db')
 
 def get_db():
     db = getattr(g, '_database', None)
@@ -259,5 +259,6 @@ def chat():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
     # Ubah host menjadi '0.0.0.0' agar bisa diakses dari perangkat lain di jaringan yang sama
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=port, debug=True)
