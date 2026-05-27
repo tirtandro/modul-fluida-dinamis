@@ -353,12 +353,12 @@ html, body {
 }
 
 .btn-primary {
-  background: #3b82f6;
+  background: #002B49;
   color: #ffffff;
-  border-bottom: 4px solid #1d4ed8;
+  border-bottom: 4px solid #001524;
 }
 .btn-primary:hover {
-  background: #2563eb;
+  background: #001A2C;
   transform: translateY(2px);
   border-bottom-width: 2px;
   margin-bottom: 2px;
