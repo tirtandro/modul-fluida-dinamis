@@ -1,0 +1,579 @@
+/* ============================================
+   Modul Interaktif Fluida Dinamis - Stylesheet
+   Color Palette: Navy / Blue / Cyan
+   ============================================ */
+
+/* --- Reset --- */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* --- Base --- */
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #0f172a; /* Dark navy for video background visibility */
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  color: #334155; /* Slate 700 */
+}
+
+/* --- Background Video --- */
+#bg-video, #menu-bg-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+#bg-video.active, #menu-bg-video.active {
+  opacity: 1;
+}
+
+/* --- Main Canvas --- */
+#mainCanvas {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+/* --- SVG Overlay Container --- */
+#svgOverlayContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none; /* Let clicks pass through to canvas */
+  z-index: 2;
+  display: block; /* Removed flex to allow absolute positioning of children */
+}
+
+/* SVG Items inside container */
+.svg-illustration {
+  display: none; /* Hidden by default, JS will toggle */
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 10px 15px rgba(6, 182, 212, 0.3));
+}
+
+.svg-illustration.active {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#svgAirplane {
+  position: absolute;
+  left: 5%;
+  top: 35%;
+}
+
+#svgPipe {
+  position: absolute;
+  right: 5%;
+  bottom: 10%;
+}
+
+/* --- Specific SVG Animations --- */
+
+/* Airplane Lift Animation */
+.svg-airplane {
+  animation: floatAirplane 4s ease-in-out infinite;
+}
+
+@keyframes floatAirplane {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(1deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
+/* Flow Particles Animation */
+.flow-particle {
+  animation: flowRight 3s linear infinite;
+}
+
+@keyframes flowRight {
+  0% { transform: translateX(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateX(200px); opacity: 0; }
+}
+
+/* --- Light Theme Card Panel (Replacing Glassmorphism) --- */
+.glass-panel {
+  background: #ffffff;
+  border: 1px solid #cccccc;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+/* --- Overlay (for iframes, modals, external content) --- */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.85); /* Light overlay */
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.overlay:not(.hidden) {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.overlay.hidden {
+  display: none;
+}
+
+/* --- Overlay iframe --- */
+.overlay iframe {
+  width: 90vw;
+  max-width: 900px;
+  height: 70vh;
+  border: none; /* PhET style is often borderless or simple */
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transform: scale(0.95);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background: #ffffff;
+}
+
+.overlay:not(.hidden) iframe {
+  transform: scale(1);
+}
+
+/* --- Overlay close button --- */
+.overlay .close-btn {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  background: rgba(59, 130, 246, 0.8);
+  backdrop-filter: blur(4px);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 12px 24px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.overlay .close-btn:hover {
+  background: rgba(37, 99, 235, 1);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+}
+
+/* ========================================================= */
+/* DOM HTML PAGES STYLING (HYBRID ARCHITECTURE)              */
+/* ========================================================= */
+
+.page-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(180deg, #e1f5fe 0%, #f0f8ff 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 5; /* Above canvas */
+  overflow-y: auto;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  padding-bottom: 40px;
+}
+
+#canvas-container {
+  z-index: 1; /* Below HTML pages */
+  background: transparent !important;
+  position: relative;
+}
+
+.page-container.hidden {
+  display: none !important;
+}
+
+#page-MENU {
+  background: rgba(15, 23, 42, 0.4) !important;
+}
+
+#page-MENU .page-header {
+  color: #ffffff;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.8);
+}
+
+/* Header */
+.page-header {
+  font-size: 28px;
+  font-weight: 800;
+  color: #212121;
+  text-shadow: 2px 2px 0px rgba(255,255,255,0.8);
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+.page-content {
+  width: 90%;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 60px;
+}
+
+/* Cards */
+.card {
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+  padding: 24px;
+  width: 100%;
+  color: #334155;
+  box-sizing: border-box;
+}
+
+.content-card h3 {
+  margin-top: 0;
+  color: #212121;
+}
+
+.styled-list {
+  padding-left: 24px;
+  line-height: 1.6;
+}
+
+.tips-list {
+  list-style: none;
+  padding-left: 0;
+  color: #64748b;
+  font-size: 0.9em;
+  line-height: 1.6;
+}
+
+/* Grid Layouts */
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  width: 100%;
+  max-width: 700px;
+  margin-bottom: 40px;
+}
+
+.tujuan-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+@media (min-width: 768px) {
+  .tujuan-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.card-header {
+  font-weight: bold;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #e2e8f0;
+  margin-bottom: 16px;
+}
+.cyan-header { color: #06b6d4; }
+.blue-header { color: #3b82f6; }
+
+/* Buttons */
+.nav-buttons-container {
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn, .menu-btn {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 999px; /* Pill shaped */
+  padding: 12px 24px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.menu-btn {
+  flex-direction: column;
+  padding: 24px;
+  font-size: 18px;
+  border-radius: 16px; /* Cards */
+}
+.menu-btn .icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+.menu-btn:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+  border-color: #3b82f6;
+  background: #f8fafc;
+}
+
+.btn-primary {
+  background: #3b82f6;
+  color: #ffffff;
+  border-bottom: 4px solid #1d4ed8;
+}
+.btn-primary:hover {
+  background: #2563eb;
+  transform: translateY(2px);
+  border-bottom-width: 2px;
+  margin-bottom: 2px;
+}
+
+.btn-secondary {
+  background: #f59e0b;
+  color: #ffffff;
+  border-bottom: 4px solid #b45309;
+}
+.btn-secondary:hover {
+  background: #d97706;
+  transform: translateY(2px);
+  border-bottom-width: 2px;
+  margin-bottom: 2px;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: #64748b;
+  border: 2px solid #cbd5e1;
+}
+.btn-ghost:hover {
+  background: #f1f5f9;
+  color: #334155;
+  border-color: #94a3b8;
+}
+
+/* Radio buttons (Kuis) */
+.quiz-option {
+  display: block;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+.quiz-option:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+.quiz-option input {
+  margin-right: 12px;
+  transform: scale(1.2);
+}
+.quiz-option.selected {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+.quiz-option.correct {
+  border-color: #10b981;
+  background: #ecfdf5;
+}
+.quiz-option.wrong {
+  border-color: #ef4444;
+  background: #fef2f2;
+}
+
+.keterangan-materi {
+  margin-top: 16px;
+  padding: 12px;
+  background: #f1f5f9;
+  border-radius: 8px;
+  font-size: 0.95em;
+}
+
+.btn:active, .menu-btn:active {
+  transform: translateY(1px);
+}
+
+/* --- Floating Chat --- */
+#floating-chat-btn {
+  position: fixed;
+  bottom: 50px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #3b82f6;
+  color: white;
+  font-size: 30px;
+  border: none;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  cursor: pointer;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+#floating-chat-btn:hover {
+  transform: scale(1.1);
+}
+#floating-chat-btn.hidden {
+  display: none !important;
+}
+
+#floating-chat-popup {
+  position: fixed;
+  bottom: 120px;
+  right: 20px;
+  width: 350px;
+  height: 450px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #cbd5e1;
+}
+#floating-chat-popup.hidden {
+  display: none !important;
+}
+.chat-popup-header {
+  background: #3b82f6;
+  color: white;
+  padding: 12px 16px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.chat-popup-header button {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
+#floating-chat-history {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #f8fafc;
+}
+.chat-popup-input {
+  display: flex;
+  border-top: 1px solid #cbd5e1;
+}
+.chat-popup-input input {
+  flex: 1;
+  border: none;
+  padding: 12px;
+  outline: none;
+  font-family: inherit;
+}
+.chat-popup-input button {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 0 16px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* --- Global Footer --- */
+#app-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 35px;
+  background: #e2e8f0;
+  border-top: 1px solid #cbd5e1;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 100;
+  pointer-events: none;
+}
+
+/* ========================================================= */
+/* MOBILE RESPONSIVE (MAX-WIDTH: 768px)                      */
+/* ========================================================= */
+@media (max-width: 768px) {
+  .page-header {
+    font-size: 22px;
+    margin-top: 20px;
+    text-align: center;
+  }
+  .card {
+    padding: 16px;
+  }
+  .menu-btn {
+    padding: 16px;
+    font-size: 16px;
+  }
+  .btn {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+  .svg-illustration {
+    max-width: 160px;
+    height: auto;
+  }
+  #svgAirplane {
+    top: 5%;
+    left: 5%;
+  }
+  #svgPipe {
+    bottom: 5%;
+    right: 5%;
+  }
+  .nav-buttons-container {
+    gap: 8px;
+  }
+}

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modul Interaktif - Fluida Dinamis</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <!-- Background Videos -->
+  <video id="bg-video" autoplay loop muted playsinline src="/static/videos/cover-bg.mp4"></video>
+  <video id="menu-bg-video" autoplay loop muted playsinline src="/static/videos/menu-bg.mp4"></video>
+
+  <!-- CANVAS ENGINE PAGES (COVER & SIMULASI) -->
+  <div id="canvas-container" class="page-container">
+
+    <!-- Main rendering canvas -->
+    <canvas id="mainCanvas"></canvas>
+
+    <!-- SVG Overlay Container for rich animated illustrations -->
+    <div id="svgOverlayContainer">
+      <!-- Airplane Lift Illustration -->
+      <svg id="svgAirplane" class="svg-illustration svg-airplane" viewBox="0 0 400 200" width="400" height="200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="airGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.8" />
+            <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.2" />
+          </linearGradient>
+        </defs>
+        <path class="flow-particle" d="M 50 80 Q 200 40 350 80" fill="none" stroke="#22d3ee" stroke-width="2" stroke-dasharray="8 4" />
+        <path class="flow-particle" style="animation-delay: 0.5s;" d="M 50 70 Q 200 30 350 70" fill="none" stroke="#22d3ee" stroke-width="2" stroke-dasharray="8 4" />
+        <path class="flow-particle" style="animation-delay: 1s;" d="M 50 120 Q 200 140 350 120" fill="none" stroke="#60a5fa" stroke-width="2" stroke-dasharray="12 8" />
+        <path d="M 100 100 Q 150 60 300 90 L 300 110 Q 150 120 100 100 Z" fill="url(#airGrad)" stroke="#22d3ee" stroke-width="2" />
+        <path d="M 200 60 L 200 20 M 190 30 L 200 20 L 210 30" fill="none" stroke="#f59e0b" stroke-width="3" />
+        <text x="215" y="40" fill="#f59e0b" font-family="system-ui" font-size="14" font-weight="bold">Gaya Angkat</text>
+      </svg>
+
+      <!-- Pipe Flow (Asas Kontinuitas) -->
+      <svg id="svgPipe" class="svg-illustration" viewBox="0 0 500 200" width="500" height="200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="pipeGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#334155" />
+            <stop offset="50%" stop-color="#475569" />
+            <stop offset="100%" stop-color="#1e293b" />
+          </linearGradient>
+          <linearGradient id="waterGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.8"/>
+          </linearGradient>
+        </defs>
+        <path d="M 20 50 L 150 50 Q 200 50 250 80 L 480 80 L 480 120 L 250 120 Q 200 150 150 150 L 20 150 Z" fill="url(#pipeGrad)" stroke="#64748b" stroke-width="2" />
+        <path d="M 20 52 L 150 52 Q 200 52 250 82 L 480 82 L 480 118 L 250 118 Q 200 148 150 148 L 20 148 Z" fill="url(#waterGrad)" />
+        <circle class="flow-particle" cx="50" cy="100" r="4" fill="#ffffff" />
+        <circle class="flow-particle" style="animation-delay: 0.3s; animation-duration: 2s;" cx="50" cy="80" r="3" fill="#ffffff" />
+        <circle class="flow-particle" style="animation-delay: 0.7s; animation-duration: 2.5s;" cx="50" cy="120" r="5" fill="#ffffff" />
+        <circle class="flow-particle" style="animation-delay: 1.2s; animation-duration: 1.8s;" cx="50" cy="70" r="4" fill="#ffffff" />
+        <circle class="flow-particle" style="animation-delay: 1.8s; animation-duration: 2.2s;" cx="50" cy="130" r="3" fill="#ffffff" />
+        
+        <text x="80" y="180" fill="#cbd5e1" font-family="system-ui" font-size="14">V₁ (Lambat)</text>
+        <text x="350" y="160" fill="#cbd5e1" font-family="system-ui" font-size="14">V₂ (Cepat)</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- LOGIN OVERLAY -->
+  <div id="login-overlay" class="overlay hidden">
+    <div class="card" style="width: 90%; max-width: 400px; padding: 30px; text-align: center;">
+      <h2 style="color: #3b82f6; margin-bottom: 20px;">Selamat Datang!</h2>
+      <p style="margin-bottom: 20px; font-size: 14px; color: #64748b;">Silakan masukkan data diri Anda untuk memulai belajar.</p>
+      
+      <div style="text-align: left; margin-bottom: 15px;">
+        <label style="display: block; font-weight: bold; margin-bottom: 5px; color: #1e293b;">Nama Lengkap</label>
+        <input type="text" id="login-nama" class="form-input" placeholder="Contoh: Budi Santoso" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px;">
+      </div>
+      
+      <div style="text-align: left; margin-bottom: 15px;">
+        <label style="display: block; font-weight: bold; margin-bottom: 5px; color: #1e293b;">Kelas</label>
+        <input type="text" id="login-kelas" class="form-input" placeholder="Contoh: XI MIPA 1" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px;">
+      </div>
+
+      <div style="text-align: left; margin-bottom: 25px;">
+        <label style="display: block; font-weight: bold; margin-bottom: 5px; color: #1e293b;">NIS</label>
+        <input type="text" id="login-nis" class="form-input" placeholder="Masukkan Nomor Induk Siswa" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px;">
+      </div>
+
+      <button class="btn btn-primary" onclick="window.Auth.submitLogin()" style="width: 100%;">LOGIN 🚀</button>
+      <div id="login-error" style="color: #ef4444; margin-top: 10px; font-size: 14px; display: none;">Harap isi semua kolom!</div>
+    </div>
+  </div>
+
+  <!-- DOM HTML PAGES -->
+  <!-- Menu Utama -->
+  <div id="page-MENU" class="page-container hidden">
+    <div class="page-header">Menu Utama</div>
+    <div class="page-content">
+      <div class="menu-grid">
+        <button class="menu-btn card" onclick="AppState.setState('PANDUAN')"><span class="icon">📖</span> Panduan</button>
+        <button class="menu-btn card" onclick="AppState.setState('TUJUAN')"><span class="icon">🎯</span> Tujuan Belajar</button>
+        <button class="menu-btn card" onclick="AppState.setState('MATERI')"><span class="icon">📚</span> Materi Interaktif</button>
+        <button class="menu-btn card" onclick="AppState.setState('SIMULASI')"><span class="icon">🔬</span> Simulasi Virtual</button>
+        <button class="menu-btn card" onclick="AppState.resetKuis(); AppState.setState('KUIS')"><span class="icon">📝</span> Kuis Evaluasi</button>
+        <button class="menu-btn card" onclick="AppState.setState('REFERENSI')"><span class="icon">📋</span> Referensi</button>
+      </div>
+      <div class="nav-buttons-container">
+        <button class="btn btn-ghost" onclick="AudioManager.stopBgm(); AppState.setState('COVER')">🚪 Kembali</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panduan -->
+  <div id="page-PANDUAN" class="page-container hidden">
+    <div class="page-header">Panduan Penggunaan</div>
+    <div class="page-content">
+      <div class="card content-card">
+        <h3>Petunjuk Penggunaan Modul</h3>
+        <ol class="styled-list">
+          <li>Klik tombol navigasi (Selanjutnya / Sebelumnya) untuk berpindah halaman materi.</li>
+          <li>Lakukan interaksi dengan klik simulasi virtual yang tersedia pada bagian tertentu.</li>
+          <li>Kerjakan kuis evaluasi di akhir untuk mengukur pemahaman Anda.</li>
+        </ol>
+        <hr />
+        <ul class="tips-list">
+          <li>💡 Tip: Gunakan tombol Kembali untuk kembali ke halaman utama kapan saja.</li>
+          <li>🔊 Klik tombol suara di pojok kanan atas untuk mengatur audio.</li>
+        </ul>
+      </div>
+      <div class="nav-buttons-container">
+        <button class="btn btn-secondary" onclick="AppState.setState('MENU')">🏠 Kembali</button>
+        <button class="btn btn-primary" onclick="AppState.setState('TUJUAN')">▶ Selanjutnya</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tujuan Pembelajaran -->
+  <div id="page-TUJUAN" class="page-container hidden">
+    <div class="page-header">Capaian & Tujuan Pembelajaran</div>
+    <div class="page-content">
+      <div class="tujuan-grid">
+        <div class="card content-card">
+          <div class="card-header cyan-header">📋 Capaian Pembelajaran (CP)</div>
+          <div class="card-body">
+            Peserta didik mampu menerapkan konsep dan prinsip fluida, termodinamika, dan gelombang dalam menyelesaikan masalah yang berkaitan dengan fenomena alam dan kehidupan sehari-hari.
+          </div>
+        </div>
+        <div class="card content-card">
+          <div class="card-header blue-header">🎯 Tujuan Pembelajaran (TP)</div>
+          <div class="card-body">
+            <ol class="styled-list">
+              <li>Murid mampu menjelaskan konsep debit aliran fluida ideal.</li>
+              <li>Murid mampu menerapkan asas kontinuitas dalam permasalahan fluida.</li>
+              <li>Murid mampu menjelaskan dan menerapkan Hukum Bernoulli pada fenomena kehidupan sehari-hari (pesawat terbang, penyemprot parfum).</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+      <div class="nav-buttons-container">
+        <button class="btn btn-secondary" onclick="AppState.setState('MENU')">🏠 Kembali</button>
+        <button class="btn btn-ghost" onclick="AppState.setState('PANDUAN')">◀ Sebelumnya</button>
+        <button class="btn btn-primary" onclick="AppState.setState('MATERI')">▶ Selanjutnya</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Materi Interaktif -->
+  <div id="page-MATERI" class="page-container hidden">
+    <div class="page-header">Materi: Fluida Dinamis</div>
+    <div class="page-content">
+      <div class="card content-card materi-card" id="materi-content">
+        <!-- JS will inject materi content here -->
+      </div>
+      <div class="nav-buttons-container" id="materi-nav">
+        <!-- JS will inject materi navigation here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Kuis Evaluasi -->
+  <div id="page-KUIS" class="page-container hidden">
+    <div class="page-header">Kuis Evaluasi</div>
+    <div class="page-content">
+      <div class="card content-card kuis-card" id="kuis-content">
+        <!-- JS will inject kuis content here -->
+      </div>
+      <div class="nav-buttons-container" id="kuis-nav">
+        <!-- JS will inject kuis navigation here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Hasil Kuis -->
+  <div id="page-KUIS_HASIL" class="page-container hidden">
+    <div class="page-header">Hasil Kuis Evaluasi</div>
+    <div class="page-content">
+      <div class="card content-card text-center" id="kuis-hasil-content">
+        <!-- JS will inject results here -->
+      </div>
+      <div class="nav-buttons-container" id="kuis-hasil-nav">
+        <!-- JS will inject results nav here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Simulasi (PhET) -->
+  <div id="page-SIMULASI" class="page-container hidden" style="padding-top: 20px;">
+    <div class="page-content" style="max-width: 1000px; width: 95%;">
+      <div class="card" style="padding: 0; overflow: hidden; height: 75vh; position: relative;">
+        <iframe src="{{ url_for('static', filename='simulations/fluid-pressure-and-flow.html') }}" style="width: 100%; height: 100%; border: none;"></iframe>
+      </div>
+      <div class="nav-buttons-container">
+        <button class="btn btn-secondary" onclick="AppState.setState('MENU')">🏠 Kembali</button>
+        <button class="btn btn-primary" onclick="AppState.resetKuis(); AppState.setState('KUIS')">Kuis Evaluasi ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Referensi -->
+  <div id="page-REFERENSI" class="page-container hidden">
+    <div class="page-header">Daftar Pustaka & Kredit</div>
+    <div class="page-content">
+      <div class="card content-card" style="text-align: left;">
+        <h3 style="color: #3b82f6; margin-bottom: 12px;">Referensi Materi</h3>
+        <ul style="list-style: none; padding: 0; color: #475569; line-height: 1.6; margin-bottom: 24px;">
+          <li style="margin-bottom: 8px;">📚 <strong>Halliday & Resnick (2014)</strong>. <em>Fundamentals of Physics</em>. J. Wiley & Sons.</li>
+          <li style="margin-bottom: 8px;">📚 <strong>Kanginan, Marthen (2016)</strong>. <em>Fisika untuk SMA/MA Kelas XI</em>. Erlangga.</li>
+          <li>📚 <strong>Giancoli, D.C. (2005)</strong>. <em>Physics: Principles with Applications</em>. Pearson.</li>
+        </ul>
+        <h3 style="color: #3b82f6; margin-bottom: 12px;">Sumber Daya Interaktif</h3>
+        <ul style="list-style: none; padding: 0; color: #475569; line-height: 1.6;">
+          <li>⚙️ <strong>PhET Interactive Simulations</strong> - <em>Fluid Pressure and Flow</em>. University of Colorado Boulder. <a href="https://phet.colorado.edu" target="_blank" style="color: #0ea5e9;">https://phet.colorado.edu</a></li>
+        </ul>
+      </div>
+      <div class="nav-buttons-container">
+        <button class="btn btn-secondary" onclick="AppState.setState('MENU')">🏠 Kembali</button>
+        <button class="btn btn-ghost" onclick="AppState.setState('KUIS')">◀ Sebelumnya</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN DASHBOARD -->
+  <div id="page-ADMIN" class="page-container hidden">
+    <div class="page-header" style="color: #1e293b; text-shadow: none;">Dasbor Guru (Admin)</div>
+    <div class="page-content" style="max-width: 1000px;">
+      <div class="card content-card" style="width: 100%;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h3>Rekapitulasi Belajar Siswa</h3>
+          <button class="btn btn-primary" onclick="window.Admin.fetchStats()">🔄 Refresh Data</button>
+        </div>
+        
+        <div style="overflow-x: auto;">
+          <table class="admin-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+              <tr style="background-color: #f1f5f9; border-bottom: 2px solid #e2e8f0;">
+                <th style="padding: 12px; font-weight: bold;">NIS</th>
+                <th style="padding: 12px; font-weight: bold;">Nama</th>
+                <th style="padding: 12px; font-weight: bold;">Kelas</th>
+                <th style="padding: 12px; font-weight: bold;">Halaman Terakhir</th>
+                <th style="padding: 12px; font-weight: bold;">Slide Materi</th>
+                <th style="padding: 12px; font-weight: bold;">Nilai Kuis Terbaik</th>
+                <th style="padding: 12px; font-weight: bold;">Waktu Akses Terakhir</th>
+              </tr>
+            </thead>
+            <tbody id="admin-table-body">
+              <tr><td colspan="7" style="text-align: center; padding: 20px;">Memuat data...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="nav-buttons-container">
+        <button class="btn btn-ghost" onclick="window.Auth.logout()" style="color: #1e293b; border-color: #cbd5e1;">🚪 Keluar Dasbor (Logout)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SAINTIKA AI Floating Button -->
+  <button id="floating-chat-btn" class="hidden" onclick="toggleChatPopup()">🤖</button>
+  <div id="floating-chat-popup" class="hidden">
+    <div class="chat-popup-header">
+      Tanya SAINTIKA
+      <button onclick="toggleChatPopup()">×</button>
+    </div>
+    <div id="floating-chat-history">
+      <div style="align-self: flex-start; background: #e0f2fe; padding: 12px; border-radius: 12px; border-bottom-left-radius: 0; max-width: 80%; color: #0f172a; line-height: 1.4;">
+        <strong>🤖 SAINTIKA:</strong><br/>Halo! Saya SAINTIKA, Tutor Fisika Virtual Anda. Ada yang ingin ditanyakan tentang Fluida Dinamis?
+      </div>
+    </div>
+    <div class="chat-popup-input">
+      <input type="text" id="floating-chat-input" placeholder="Ketik pesan..." onkeypress="if(event.key === 'Enter') sendFloatingChat()">
+      <button onclick="startVoiceRecognition('floating-chat-input', window.sendFloatingChat)" style="background: transparent; color: #3b82f6; font-size: 20px; padding: 0 8px; border: none; cursor: pointer;">🎤</button>
+      <button onclick="sendFloatingChat()">Kirim</button>
+    </div>
+  </div>
+
+  <!-- Global Footer -->
+  <div id="app-footer">
+    Tim Pengembang: Yuli Estrian &bull; Rani Kusfiana &bull; Tirtandro Meda &bull; Yusfriana Yanuarti Windarto
+  </div>
+
+  <!-- Overlay for iframe-based content (videos, external resources) -->
+  <div id="overlay" class="overlay hidden"></div>
+
+  <!-- Core modules loaded in dependency order -->
+  <script src="{{ url_for('static', filename='js/utils.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/audio.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/state.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/ui.js') }}" defer></script>
+
+  <!-- App Modules -->
+  <script src="{{ url_for('static', filename='js/pages/cover.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/pages/materi.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/pages/kuis.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+</body>
+</html>
