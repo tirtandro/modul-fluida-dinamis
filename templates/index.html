@@ -242,9 +242,13 @@
     <div class="page-header" style="color: #1e293b; text-shadow: none;">Dasbor Guru (Admin)</div>
     <div class="page-content" style="max-width: 1000px;">
       <div class="card content-card" style="width: 100%;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
           <h3>Rekapitulasi Belajar Siswa</h3>
-          <button class="btn btn-primary" onclick="window.Admin.fetchStats()">🔄 Refresh Data</button>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="btn btn-primary" onclick="window.Admin.fetchStats()">🔄 Refresh Data</button>
+            <button class="btn btn-success" onclick="window.Admin.exportExcel()">📥 Ekspor Excel</button>
+            <button class="btn btn-danger" onclick="window.Admin.deleteAll()">🗑️ Hapus Semua Data</button>
+          </div>
         </div>
         
         <div style="overflow-x: auto;">
@@ -258,10 +262,11 @@
                 <th style="padding: 12px; font-weight: bold;">Slide Materi</th>
                 <th style="padding: 12px; font-weight: bold;">Nilai Kuis Terbaik</th>
                 <th style="padding: 12px; font-weight: bold;">Waktu Akses Terakhir</th>
+                <th style="padding: 12px; font-weight: bold; text-align: center;">Aksi</th>
               </tr>
             </thead>
             <tbody id="admin-table-body">
-              <tr><td colspan="7" style="text-align: center; padding: 20px;">Memuat data...</td></tr>
+              <tr><td colspan="8" style="text-align: center; padding: 20px;">Memuat data...</td></tr>
             </tbody>
           </table>
         </div>

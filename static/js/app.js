@@ -236,13 +236,13 @@
   window.Admin = {
     async fetchStats() {
       const tbody = document.getElementById('admin-table-body');
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px;">Memuat data...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 20px;">Memuat data...</td></tr>';
       try {
         const res = await fetch('/api/admin/stats');
         const data = await res.json();
         if (data.stats) {
           if (data.stats.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px;">Belum ada data siswa.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 20px;">Belum ada data siswa.</td></tr>';
             return;
           }
           let html = '';
@@ -255,15 +255,68 @@
               <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">${s.last_slide}</td>
               <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: bold;">${s.best_score} / 5</td>
               <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">${s.updated_at}</td>
+              <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; text-align: center;">
+                <button class="admin-btn-delete" onclick="window.Admin.deleteStudent('${s.nis}', '${s.nama.replace(/'/g, "\\'")}')">🗑️ Hapus</button>
+              </td>
             </tr>`;
           });
           tbody.innerHTML = html;
         } else {
-          tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px; color: red;">Akses ditolak atau error.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 20px; color: red;">Akses ditolak atau error.</td></tr>';
         }
       } catch (e) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px; color: red;">Terjadi kesalahan jaringan.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 20px; color: red;">Terjadi kesalahan jaringan.</td></tr>';
       }
+    },
+    async deleteStudent(nis, nama) {
+      const confirmDelete = confirm(`Apakah Anda yakin ingin menghapus data belajar siswa "${nama}" (NIS: ${nis})?\nTindakan ini akan menghapus semua progress dan nilai kuisnya secara permanen.`);
+      if (!confirmDelete) return;
+      
+      try {
+        const res = await fetch(`/api/admin/delete_student/${nis}`, {
+          method: 'DELETE'
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert(`Data siswa "${nama}" berhasil dihapus.`);
+          this.fetchStats();
+        } else {
+          alert(data.error || 'Gagal menghapus data siswa');
+        }
+      } catch (e) {
+        console.error('Delete error', e);
+        alert('Terjadi kesalahan jaringan saat menghapus data siswa.');
+      }
+    },
+    async deleteAll() {
+      const confirm1 = confirm('PERINGATAN: Apakah Anda yakin ingin menghapus SELURUH data siswa dari database?\nSemua akun siswa, progres belajar, dan skor kuis akan dihapus secara permanen.');
+      if (!confirm1) return;
+      
+      const confirm2 = prompt('Untuk mengonfirmasi tindakan berbahaya ini, silakan ketik "HAPUS" pada kotak di bawah:');
+      if (confirm2 !== 'HAPUS') {
+        alert('Penghapusan dibatalkan. Konfirmasi tidak cocok.');
+        return;
+      }
+      
+      try {
+        const res = await fetch('/api/admin/delete_all_students', {
+          method: 'DELETE'
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert('Seluruh data siswa berhasil dihapus.');
+          this.fetchStats();
+        } else {
+          alert(data.error || 'Gagal menghapus semua data');
+        }
+      } catch (e) {
+        console.error('Delete all error', e);
+        alert('Terjadi kesalahan jaringan saat menghapus data.');
+      }
+    },
+    exportExcel() {
+      // Picu pengunduhan berkas langsung dari browser
+      window.location.href = '/api/admin/export';
     }
   };
 

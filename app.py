@@ -215,6 +215,98 @@ def admin_stats():
     return jsonify({"stats": stats})
 
 
+@app.route('/api/admin/delete_student/<nis>', methods=['DELETE'])
+def delete_student(nis):
+    if session.get('role') != 'admin':
+        return jsonify({"error": "Unauthorized"}), 401
+    
+    db = get_db()
+    cursor = db.cursor()
+    
+    # Cari user_id berdasarkan NIS
+    cursor.execute("SELECT id FROM users WHERE nis = ? AND role = 'student'", (nis,))
+    user = cursor.fetchone()
+    if not user:
+        return jsonify({"error": "Siswa tidak ditemukan"}), 404
+    
+    user_id = user['id']
+    
+    # Hapus data progress, kuis, dan data siswa
+    cursor.execute("DELETE FROM progress WHERE user_id = ?", (user_id,))
+    cursor.execute("DELETE FROM quiz_scores WHERE user_id = ?", (user_id,))
+    cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
+    db.commit()
+    
+    return jsonify({"success": True, "message": "Data siswa berhasil dihapus"})
+
+
+@app.route('/api/admin/delete_all_students', methods=['DELETE'])
+def delete_all_students():
+    if session.get('role') != 'admin':
+        return jsonify({"error": "Unauthorized"}), 401
+    
+    db = get_db()
+    cursor = db.cursor()
+    
+    # Hapus data progress dan nilai kuis untuk semua siswa
+    cursor.execute("DELETE FROM progress WHERE user_id IN (SELECT id FROM users WHERE role = 'student')")
+    cursor.execute("DELETE FROM quiz_scores WHERE user_id IN (SELECT id FROM users WHERE role = 'student')")
+    
+    # Hapus semua user dengan role 'student'
+    cursor.execute("DELETE FROM users WHERE role = 'student'")
+    db.commit()
+    
+    return jsonify({"success": True, "message": "Semua data siswa berhasil dihapus"})
+
+
+@app.route('/api/admin/export', methods=['GET'])
+def export_students():
+    if session.get('role') != 'admin':
+        return jsonify({"error": "Unauthorized"}), 401
+    
+    db = get_db()
+    cursor = db.cursor()
+    
+    query = """
+        SELECT u.nis, u.nama, u.kelas, p.last_page, p.last_materi_slide, p.updated_at,
+               (SELECT MAX(score) FROM quiz_scores WHERE user_id = u.id) as best_score
+        FROM users u
+        LEFT JOIN progress p ON u.id = p.user_id
+        WHERE u.role = 'student'
+        ORDER BY p.updated_at DESC
+    """
+    cursor.execute(query)
+    rows = cursor.fetchall()
+    
+    import io
+    import csv
+    from flask import make_response
+    
+    si = io.StringIO()
+    # Tulis UTF-8 BOM agar Excel dapat menampilkan karakter khusus dengan benar
+    si.write('\ufeff')
+    cw = csv.writer(si, delimiter=';')
+    
+    # Tulis Header
+    cw.writerow(['NIS', 'Nama', 'Kelas', 'Halaman Terakhir', 'Slide Materi', 'Nilai Kuis Terbaik', 'Waktu Akses Terakhir'])
+    
+    for row in rows:
+        cw.writerow([
+            row['nis'],
+            row['nama'],
+            row['kelas'],
+            row['last_page'] or 'Belum mulai',
+            row['last_materi_slide'] or 0,
+            row['best_score'] if row['best_score'] is not None else '-',
+            row['updated_at'] or '-'
+        ])
+    
+    response = make_response(si.getvalue())
+    response.headers["Content-Disposition"] = "attachment; filename=rekapitulasi_belajar_siswa.csv"
+    response.headers["Content-type"] = "text/csv; charset=utf-8"
+    return response
+
+
 # ==========================================
 # GROQ AI CHAT API
 # ==========================================
