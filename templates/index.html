@@ -110,15 +110,51 @@
     <div class="page-header">Menu Utama</div>
     <div class="page-content">
       <div class="menu-grid">
-        <button class="menu-btn card" onclick="AppState.setState('PANDUAN')"><span class="icon">📖</span> Panduan</button>
-        <button class="menu-btn card" onclick="AppState.setState('TUJUAN')"><span class="icon">🎯</span> Tujuan Belajar</button>
-        <button class="menu-btn card" onclick="AppState.setState('MATERI')"><span class="icon">📚</span> Materi Interaktif</button>
-        <button class="menu-btn card" onclick="AppState.setState('SIMULASI')"><span class="icon">🔬</span> Simulasi Virtual</button>
-        <button class="menu-btn card" onclick="AppState.resetKuis(); AppState.setState('KUIS')"><span class="icon">📝</span> Kuis Evaluasi</button>
-        <button class="menu-btn card" onclick="AppState.setState('REFERENSI')"><span class="icon">📋</span> Referensi</button>
+        <button class="menu-btn" data-accent="cyan" onclick="AppState.setState('PANDUAN')">
+          <div class="menu-btn-glow"></div>
+          <div class="menu-btn-icon-ring"><span class="icon">📖</span></div>
+          <span class="menu-btn-label">Panduan</span>
+          <span class="menu-btn-sub">Petunjuk penggunaan modul</span>
+          <span class="menu-btn-step">01</span>
+        </button>
+        <button class="menu-btn" data-accent="amber" onclick="AppState.setState('TUJUAN')">
+          <div class="menu-btn-glow"></div>
+          <div class="menu-btn-icon-ring"><span class="icon">🎯</span></div>
+          <span class="menu-btn-label">Tujuan Belajar</span>
+          <span class="menu-btn-sub">Capaian & tujuan pembelajaran</span>
+          <span class="menu-btn-step">02</span>
+        </button>
+        <button class="menu-btn" data-accent="blue" onclick="AppState.setState('MATERI')">
+          <div class="menu-btn-glow"></div>
+          <div class="menu-btn-icon-ring"><span class="icon">📚</span></div>
+          <span class="menu-btn-label">Materi Interaktif</span>
+          <span class="menu-btn-sub">Pelajari konsep fluida dinamis</span>
+          <span class="menu-btn-step">03</span>
+        </button>
+        <button class="menu-btn" data-accent="purple" onclick="AppState.setState('SIMULASI')">
+          <div class="menu-btn-glow"></div>
+          <div class="menu-btn-icon-ring"><span class="icon">🔬</span></div>
+          <span class="menu-btn-label">Simulasi Virtual</span>
+          <span class="menu-btn-sub">Eksperimen interaktif PhET</span>
+          <span class="menu-btn-step">04</span>
+        </button>
+        <button class="menu-btn" data-accent="emerald" onclick="AppState.resetKuis(); AppState.setState('KUIS')">
+          <div class="menu-btn-glow"></div>
+          <div class="menu-btn-icon-ring"><span class="icon">📝</span></div>
+          <span class="menu-btn-label">Kuis Evaluasi</span>
+          <span class="menu-btn-sub">Uji pemahaman Anda</span>
+          <span class="menu-btn-step">05</span>
+        </button>
+        <button class="menu-btn" data-accent="slate" onclick="AppState.setState('REFERENSI')">
+          <div class="menu-btn-glow"></div>
+          <div class="menu-btn-icon-ring"><span class="icon">📋</span></div>
+          <span class="menu-btn-label">Referensi</span>
+          <span class="menu-btn-sub">Daftar pustaka & kredit</span>
+          <span class="menu-btn-step">06</span>
+        </button>
       </div>
       <div class="nav-buttons-container">
-        <button class="btn btn-ghost" onclick="AudioManager.stopBgm(); AppState.setState('COVER')">🚪 Kembali</button>
+        <button class="btn btn-ghost menu-back-btn" onclick="AudioManager.stopBgm(); AppState.setState('COVER')">🚪 Kembali</button>
       </div>
     </div>
   </div>
