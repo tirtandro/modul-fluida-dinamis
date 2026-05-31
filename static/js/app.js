@@ -233,6 +233,36 @@
     }
   };
 
+  // ==========================================
+  // VIDEO INTRO CONTROLLER
+  // ==========================================
+  window.VideoIntro = {
+    _initialized: false,
+    init() {
+      if (this._initialized) return;
+      this._initialized = true;
+
+      const introVideo = document.getElementById('intro-video');
+      if (introVideo) {
+        // Show "Masuk ke Modul" button when video ends
+        introVideo.addEventListener('ended', () => {
+          const btnContinue = document.getElementById('btn-continue-video');
+          if (btnContinue) btnContinue.classList.add('visible');
+        });
+      }
+    },
+    skip() {
+      const introVideo = document.getElementById('intro-video');
+      if (introVideo) introVideo.pause();
+      AppState.setState('MENU');
+    },
+    continue() {
+      const introVideo = document.getElementById('intro-video');
+      if (introVideo) introVideo.pause();
+      AppState.setState('MENU');
+    }
+  };
+
   window.Admin = {
     async fetchStats() {
       const tbody = document.getElementById('admin-table-body');
@@ -325,6 +355,9 @@
 
     // Check authentication first
     window.Auth.checkStatus();
+
+    // Initialize Video Intro controller
+    window.VideoIntro.init();
 
     // Initialize via setState so video and all UI toggles are properly set up
     AppState.setState('COVER');

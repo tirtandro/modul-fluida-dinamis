@@ -54,7 +54,7 @@ window.Pages.COVER = {
       text: 'Mulai Belajar',
       icon: '🚀',
       style: 'accent',
-      onClick: () => AppState.setState('MENU'),
+      onClick: () => AppState.setState('VIDEO_INTRO'),
     }));
 
     // "Ganti Akun" button

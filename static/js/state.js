@@ -2,15 +2,16 @@
  * State Manager - Manages application state and page transitions
  *
  * Valid states:
- *   COVER     - Halaman sampul / cover page
- *   MENU      - Menu utama / main menu
- *   PANDUAN   - Panduan penggunaan / usage guide
- *   TUJUAN    - Tujuan pembelajaran / learning objectives
- *   MATERI    - Konten materi / learning content (7 slides, index 0-6)
- *   SIMULASI  - Simulasi interaktif / interactive simulation
- *   KUIS      - Soal evaluasi / quiz questions (5 questions, index 0-4)
- *   KUIS_HASIL - Hasil kuis / quiz results
- *   REFERENSI - Daftar pustaka / references
+ *   COVER       - Halaman sampul / cover page
+ *   VIDEO_INTRO - Video pembuka / opening video (after login, before MENU)
+ *   MENU        - Menu utama / main menu
+ *   PANDUAN     - Panduan penggunaan / usage guide
+ *   TUJUAN      - Tujuan pembelajaran / learning objectives
+ *   MATERI      - Konten materi / learning content (7 slides, index 0-6)
+ *   SIMULASI    - Simulasi interaktif / interactive simulation
+ *   KUIS        - Soal evaluasi / quiz questions (5 questions, index 0-4)
+ *   KUIS_HASIL  - Hasil kuis / quiz results
+ *   REFERENSI   - Daftar pustaka / references
  */
 window.AppState = {
   /** @type {string} Current active state */
@@ -125,6 +126,20 @@ window.AppState = {
         menuVideo.pause();
       }
     }
+
+    // Toggle intro video (Show only on VIDEO_INTRO)
+    const introVideo = document.getElementById('intro-video');
+    if (introVideo) {
+      if (newState === 'VIDEO_INTRO') {
+        introVideo.currentTime = 0;
+        introVideo.play().catch(e => console.log('Intro video auto-play blocked', e));
+        // Reset continue button
+        const btnContinue = document.getElementById('btn-continue-video');
+        if (btnContinue) btnContinue.classList.remove('visible');
+      } else {
+        introVideo.pause();
+      }
+    }
     
     if (isCanvasPage) {
       // Show canvas container
@@ -160,6 +175,7 @@ window.AppState = {
     // Direct mapping — state names match page keys
     const stateMap = {
       'COVER': 'COVER',
+      'VIDEO_INTRO': 'VIDEO_INTRO',
       'MENU': 'MENU',
       'PANDUAN': 'PANDUAN',
       'TUJUAN': 'TUJUAN',
