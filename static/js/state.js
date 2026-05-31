@@ -9,6 +9,7 @@
  *   TUJUAN      - Tujuan pembelajaran / learning objectives
  *   MATERI      - Konten materi / learning content (7 slides, index 0-6)
  *   SIMULASI    - Simulasi interaktif / interactive simulation
+ *   VIDEO_KUIS  - Video pembuka kuis / quiz intro video (before KUIS)
  *   KUIS        - Soal evaluasi / quiz questions (5 questions, index 0-4)
  *   KUIS_HASIL  - Hasil kuis / quiz results
  *   REFERENSI   - Daftar pustaka / references
@@ -140,6 +141,19 @@ window.AppState = {
         introVideo.pause();
       }
     }
+
+    // Toggle kuis intro video (Show only on VIDEO_KUIS)
+    const kuisIntroVideo = document.getElementById('kuis-intro-video');
+    if (kuisIntroVideo) {
+      if (newState === 'VIDEO_KUIS') {
+        kuisIntroVideo.currentTime = 0;
+        kuisIntroVideo.play().catch(e => console.log('Kuis intro video auto-play blocked', e));
+        const btnContinueKuis = document.getElementById('btn-continue-kuis-video');
+        if (btnContinueKuis) btnContinueKuis.classList.remove('visible');
+      } else {
+        kuisIntroVideo.pause();
+      }
+    }
     
     if (isCanvasPage) {
       // Show canvas container
@@ -181,6 +195,7 @@ window.AppState = {
       'TUJUAN': 'TUJUAN',
       'MATERI': 'MATERI',
       'SIMULASI': 'SIMULASI',
+      'VIDEO_KUIS': 'VIDEO_KUIS',
       'KUIS': 'KUIS',
       'KUIS_HASIL': 'KUIS_HASIL',
       'REFERENSI': 'REFERENSI'

@@ -798,7 +798,8 @@ html, body {
 }
 
 /* --- Video Intro Page --- */
-#page-VIDEO_INTRO {
+#page-VIDEO_INTRO,
+#page-VIDEO_KUIS {
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%) !important;
   display: flex;
   flex-direction: column;

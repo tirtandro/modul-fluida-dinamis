@@ -138,7 +138,7 @@
           <span class="menu-btn-sub">Eksperimen interaktif PhET</span>
           <span class="menu-btn-step">04</span>
         </button>
-        <button class="menu-btn" data-accent="emerald" onclick="AppState.resetKuis(); AppState.setState('KUIS')">
+        <button class="menu-btn" data-accent="emerald" onclick="AppState.resetKuis(); AppState.setState('VIDEO_KUIS')">
           <div class="menu-btn-glow"></div>
           <div class="menu-btn-icon-ring"><span class="icon">📝</span></div>
           <span class="menu-btn-label">Kuis Evaluasi</span>
@@ -226,6 +226,21 @@
     </div>
   </div>
 
+  <!-- Video Pembuka Kuis -->
+  <div id="page-VIDEO_KUIS" class="page-container hidden">
+    <div class="video-intro-header">📝 Persiapan Kuis — <span>Fluida Dinamis</span></div>
+    <div class="video-intro-wrapper">
+      <video id="kuis-intro-video" playsinline>
+        <source src="/static/videos/kuis-intro.mp4" type="video/mp4">
+        Browser Anda tidak mendukung tag video.
+      </video>
+    </div>
+    <div class="video-intro-controls">
+      <button class="btn-skip-video" onclick="window.VideoKuis.skip()">Lewati Video ⏭</button>
+      <button id="btn-continue-kuis-video" class="btn-continue-video" onclick="window.VideoKuis.continue()">Mulai Kuis 📝</button>
+    </div>
+  </div>
+
   <!-- Kuis Evaluasi -->
   <div id="page-KUIS" class="page-container hidden">
     <div class="page-header">Kuis Evaluasi</div>
@@ -260,7 +275,7 @@
       </div>
       <div class="nav-buttons-container">
         <button class="btn btn-secondary" onclick="AppState.setState('MENU')">🏠 Kembali</button>
-        <button class="btn btn-primary" onclick="AppState.resetKuis(); AppState.setState('KUIS')">Kuis Evaluasi ▶</button>
+        <button class="btn btn-primary" onclick="AppState.resetKuis(); AppState.setState('VIDEO_KUIS')">Kuis Evaluasi ▶</button>
       </div>
     </div>
   </div>

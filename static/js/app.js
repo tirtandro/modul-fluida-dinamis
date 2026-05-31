@@ -263,6 +263,35 @@
     }
   };
 
+  // ==========================================
+  // VIDEO KUIS CONTROLLER
+  // ==========================================
+  window.VideoKuis = {
+    _initialized: false,
+    init() {
+      if (this._initialized) return;
+      this._initialized = true;
+
+      const kuisVideo = document.getElementById('kuis-intro-video');
+      if (kuisVideo) {
+        kuisVideo.addEventListener('ended', () => {
+          const btnContinue = document.getElementById('btn-continue-kuis-video');
+          if (btnContinue) btnContinue.classList.add('visible');
+        });
+      }
+    },
+    skip() {
+      const kuisVideo = document.getElementById('kuis-intro-video');
+      if (kuisVideo) kuisVideo.pause();
+      AppState.setState('KUIS');
+    },
+    continue() {
+      const kuisVideo = document.getElementById('kuis-intro-video');
+      if (kuisVideo) kuisVideo.pause();
+      AppState.setState('KUIS');
+    }
+  };
+
   window.Admin = {
     async fetchStats() {
       const tbody = document.getElementById('admin-table-body');
@@ -358,6 +387,9 @@
 
     // Initialize Video Intro controller
     window.VideoIntro.init();
+
+    // Initialize Video Kuis controller
+    window.VideoKuis.init();
 
     // Initialize via setState so video and all UI toggles are properly set up
     AppState.setState('COVER');
