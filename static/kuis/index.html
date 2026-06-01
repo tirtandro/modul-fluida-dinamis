@@ -290,23 +290,39 @@
                 aspect-ratio: 16/9;
                 max-height: 90vh;
             }
+            .slide {
+                padding: 24px 40px;
+            }
+            .question-text {
+                font-size: 24px;
+            }
+            .option-btn {
+                padding: 16px 22px;
+                font-size: 16px;
+            }
         }
 
         @media (max-width: 900px) {
-            body {
+            html, body {
+                height: 100%;
+                margin: 0;
                 padding: 0;
-                align-items: stretch;
+                overflow: hidden;
+            }
+            body {
+                display: block;
+                background-color: #2e1065;
             }
             .quizizz-container {
                 width: 100%;
                 height: 100%;
-                max-height: 100vh;
+                max-height: 100%;
                 border-radius: 0;
                 box-shadow: none;
                 aspect-ratio: auto;
             }
             .slide {
-                padding: 20px 24px;
+                padding: 16px 20px;
                 justify-content: flex-start;
                 gap: 15px;
                 overflow-y: auto;
@@ -326,13 +342,13 @@
                 flex-grow: 0;
             }
             .question-icon {
-                font-size: 36px;
-                margin-bottom: 10px;
+                font-size: 32px;
+                margin-bottom: 8px;
             }
             .question-text {
-                font-size: 20px;
+                font-size: 18px;
                 line-height: 1.3;
-                margin-bottom: 12px;
+                margin-bottom: 10px;
             }
             .options-grid {
                 grid-template-columns: 1fr;
@@ -340,66 +356,66 @@
                 margin-bottom: 10px;
             }
             .option-btn {
-                padding: 14px 18px;
-                font-size: 15px;
+                padding: 12px 16px;
+                font-size: 14px;
                 border-radius: 12px;
                 border-bottom-width: 4px;
             }
             .option-shape {
                 font-size: 14px;
-                margin-right: 12px;
+                margin-right: 10px;
                 width: 20px;
             }
             .feedback-overlay {
                 align-items: flex-start;
                 overflow-y: auto;
-                padding: 20px 0;
+                padding: 15px 0;
             }
             .feedback-content {
-                padding: 16px;
+                padding: 12px;
                 max-width: 100%;
             }
             .feedback-title {
-                font-size: 32px;
-                margin-bottom: 10px;
+                font-size: 28px;
+                margin-bottom: 8px;
             }
             .feedback-explanation {
-                font-size: 14px;
-                padding: 12px;
-                margin-bottom: 15px;
+                font-size: 13px;
+                padding: 10px;
+                margin-bottom: 12px;
             }
             .btn-next, .btn-start {
-                font-size: 16px;
-                padding: 10px 24px;
+                font-size: 15px;
+                padding: 8px 20px;
                 width: 100%;
-                max-width: 280px;
+                max-width: 260px;
             }
             .score-box {
                 width: 100%;
-                max-width: 260px;
-                padding: 15px;
-                margin: 10px 0;
+                max-width: 240px;
+                padding: 12px;
+                margin: 8px 0;
             }
             .score-number {
-                font-size: 54px;
+                font-size: 48px;
             }
             .visual-box {
-                font-size: 14px;
-                padding: 8px 12px;
-                gap: 8px;
+                font-size: 13px;
+                padding: 6px 10px;
+                gap: 6px;
             }
             .pipe-visual {
-                padding: 3px;
+                padding: 2px;
             }
             .pipe-wide {
-                width: 60px;
-                height: 35px;
-                font-size: 10px;
+                width: 50px;
+                height: 30px;
+                font-size: 9px;
             }
             .pipe-narrow {
-                width: 60px;
-                height: 15px;
-                font-size: 8px;
+                width: 50px;
+                height: 12px;
+                font-size: 7px;
             }
         }
     </style>
