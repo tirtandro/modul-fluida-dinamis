@@ -136,9 +136,6 @@ window.Pages.COVER = {
     ctx.fillStyle = 'rgba(15, 23, 42, 0.6)'; // 60% dark overlay for readability
     ctx.fillRect(0, 0, w, h);
 
-    // ---- 2. Grid pattern overlay ----
-    Utils.drawGridPattern(ctx, canvas);
-
     // ---- 3. Particle system — floating bubbles ----
     const particles = this.localState.particles;
     for (let i = 0; i < particles.length; i++) {
