@@ -78,86 +78,12 @@ window.Pages.MATERI = {
   chatHistory: [],
 
   renderDOM() {
-    const slideIndex = AppState.materiSlide || 0;
-    const slide = this.slides[slideIndex];
-    
-    const contentDiv = document.getElementById('materi-content');
-    if (!contentDiv) return;
-    
-    // Ping progress API whenever a slide is viewed
+    // Ping progress API whenever the materi page is viewed
     fetch('/api/progress', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ page: 'MATERI', slide: slideIndex })
+      body: JSON.stringify({ page: 'MATERI', slide: 0 })
     }).catch(e => console.error(e));
-    
-    let html = `<h3>${slide.title}</h3><hr/>`;
-    
-    slide.blocks.forEach(block => {
-      if (block.type === 'text') {
-        html += `<p>${block.value}</p>`;
-      } else if (block.type === 'heading') {
-        html += `<div class="card-header blue-header" style="margin-top:20px;">${block.value}</div>`;
-      } else if (block.type === 'formula') {
-        html += `<div style="background:#eff6ff; border: 2px solid #3b82f6; border-radius: 8px; padding: 16px; margin: 16px 0; text-align: center; font-size: 20px; font-weight: bold; color: #1d4ed8;">${block.value}</div>`;
-      } else if (block.type === 'list') {
-        html += `<ul class="styled-list">`;
-        block.items.forEach(item => {
-          html += `<li>${item}</li>`;
-        });
-        html += `</ul>`;
-      } else if (block.type === 'chat') {
-        html += `
-          <div id="chat-container" style="border: 2px solid #3b82f6; border-radius: 12px; margin-top: 20px; overflow: hidden; display: flex; flex-direction: column; height: 400px; background: #f8fafc;">
-            <div id="chat-history" style="flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
-              <!-- History will be injected here by updateChatHistoryUI -->
-            </div>
-            <div style="display: flex; border-top: 1px solid #cbd5e1; background: #ffffff;">
-              <input type="text" id="chat-input" placeholder="Ketik pesan atau /help lalu tekan Enter..." onkeypress="if(event.key === 'Enter') window.Pages.MATERI.sendChatMessage()" style="flex: 1; border: none; padding: 16px; outline: none; font-family: inherit; font-size: 16px; background: transparent;">
-              <button onclick="startVoiceRecognition('chat-input', window.Pages.MATERI.sendChatMessage)" style="background: transparent; color: #3b82f6; font-size: 20px; padding: 0 8px; border: none; cursor: pointer;">🎤</button>
-              <button onclick="window.Pages.MATERI.sendChatMessage()" style="background: #3b82f6; color: white; border: none; padding: 0 24px; cursor: pointer; font-weight: bold; font-family: inherit; font-size: 16px;">Kirim</button>
-            </div>
-          </div>
-        `;
-      }
-    });
-    
-    // Add slide indicators (dots)
-    html += `<div style="display:flex; justify-content:center; margin-top:24px; gap:8px;">`;
-    for(let i=0; i<this.slides.length; i++) {
-      const activeStr = (i === slideIndex) ? 'background:#3b82f6;' : 'background:#cbd5e1;';
-      html += `<div style="width:12px; height:12px; border-radius:50%; ${activeStr}"></div>`;
-    }
-    html += `</div>`;
-    
-    contentDiv.innerHTML = html;
-
-    // After DOM is ready, if chat is rendered, populate its history
-    if (document.getElementById('chat-history')) {
-      this.updateChatHistoryUI();
-    }
-    
-    
-    // Render Navigation
-    const navDiv = document.getElementById('materi-nav');
-    if (!navDiv) return;
-    
-    let navHtml = '';
-    navHtml += `<button class="btn btn-secondary" onclick="AppState.setState('MENU')">🏠 Kembali</button>`;
-    
-    if (slideIndex > 0) {
-      navHtml += `<button class="btn btn-ghost" onclick="window.Pages.MATERI.prevSlide()">◀ Sebelumnya</button>`;
-    } else {
-      navHtml += `<button class="btn btn-ghost" onclick="AppState.setState('TUJUAN')">◀ Sebelumnya</button>`;
-    }
-    
-    if (slideIndex < this.slides.length - 1) {
-      navHtml += `<button class="btn btn-primary" onclick="window.Pages.MATERI.nextSlide()">Selanjutnya ▶</button>`;
-    } else {
-      navHtml += `<button class="btn btn-primary" onclick="AppState.setState('SIMULASI')">Ke Simulasi ▶</button>`;
-    }
-    
-    navDiv.innerHTML = navHtml;
   },
 
   nextSlide() {
