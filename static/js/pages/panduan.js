@@ -50,17 +50,18 @@ window.Pages.PANDUAN = {
     let cursorY = cardY + padY;
 
     // — Card title —
-    ctx.save();
-    ctx.font = 'bold 18px "Segoe UI", system-ui, sans-serif';
-    const titleText = 'Petunjuk Penggunaan Modul';
+    ctx.save();\n    ctx.font = 'bold 18px "Segoe UI", system-ui, sans-serif';
+    const titleText = 'Panduan Belajar Fluida Dinamis';
     cursorY += 24; // title line
 
     // — Numbered items —
     const items = [
-      'Klik tombol navigasi (Selanjutnya / Sebelumnya) untuk berpindah halaman materi.',
-      'Lakukan interaksi dengan klik simulasi virtual yang tersedia pada bagian tertentu.',
-      'Kerjakan kuis evaluasi di akhir untuk mengukur pemahaman Anda.',
-      'Gunakan tombol obrolan (floating chat) atau kunjungi halaman SAINTIKA untuk bertanya pada Tutor AI.',
+      'Mulai dari Cover dan tekan tombol "Masuk".',
+      'Baca tim penyusun modul dengan seksama kemudian tekan tombol "Mulai Belajar".',
+      'Pahami Dasar (CP/TP): Baca bagian CP & TP terlebih dahulu. Ini adalah "tujuan akhir" kalian — hal-hal apa saja yang harus kalian kuasai setelah belajar modul ini.',
+      'Eksplorasi Materi: Saat membaca Materi Interaktif, jangan terburu-buru. Jika ada rumus atau prinsip (seperti Hukum Bernoulli), cobalah untuk menghubungkannya dengan contoh nyata yang disediakan.',
+      'Praktik dengan Simulasi Virtual: Ini bagian terpenting! Klik pada tautan Simulasi Virtual. Cobalah mengubah-ubah variabel (seperti memperkecil lubang pipa atau menambah kecepatan aliran). Amati apa yang terjadi pada tekanan atau debit air. Jangan takut untuk bereksperimen!',
+      'Uji Pemahaman: Setelah merasa cukup paham, kerjakan Kuis Evaluasi. Jangan hanya melihat skor, tetapi perhatikan di mana letak kesalahan kalian jika ada jawaban yang salah.',
     ];
 
     ctx.font = '15px "Segoe UI", system-ui, sans-serif';
@@ -76,8 +77,9 @@ window.Pages.PANDUAN = {
 
     // Tips
     const tips = [
-      '💡 Tip: Gunakan tombol Kembali untuk kembali ke halaman utama kapan saja.',
-      '🔊 Klik tombol suara di pojok kanan atas untuk mengatur audio.',
+      '📝 Catat Konsep Kunci: Siapkan buku catatan. Tuliskan poin-poin penting atau pertanyaan yang muncul saat kalian mencoba simulasi.',
+      '🔄 Gunakan Navigasi dengan Benar: Gunakan tombol "Selanjutnya" dan "Sebelumnya" untuk mengatur tempo belajar. Jika ada bagian yang sulit, jangan ragu untuk kembali ke halaman sebelumnya.',
+      '🌍 Hubungkan dengan Keseharian: Fluida Dinamis ada di sekitar kita—mulai dari cara kerja sayap pesawat hingga air yang mengalir dari keran di rumah.',
     ];
     totalContentH += 20; // gap before tips
     const wrappedTips = tips.map(text => {
@@ -121,7 +123,7 @@ window.Pages.PANDUAN = {
       cursorY += lines.length * lineH + 12;
     });
 
-    // Divider line
+    // Tips header
     cursorY += 4;
     ctx.beginPath();
     ctx.moveTo(contentX, cursorY);
@@ -129,7 +131,12 @@ window.Pages.PANDUAN = {
     ctx.strokeStyle = UI.COLORS.border;
     ctx.lineWidth = 1;
     ctx.stroke();
-    cursorY += 16;
+    cursorY += 12;
+
+    ctx.fillStyle = UI.COLORS.accent;
+    ctx.font = 'bold 14px "Segoe UI", system-ui, sans-serif';
+    ctx.fillText('💡 Tips agar lebih memahami materi:', contentX, cursorY);
+    cursorY += lineH + 4;
 
     // Tips
     ctx.font = '14px "Segoe UI", system-ui, sans-serif';
