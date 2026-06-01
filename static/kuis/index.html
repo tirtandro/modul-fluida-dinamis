@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Seru: Fluida Dinamis ala Quizizz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        /* BASE STYLES */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #4c1d95; /* Ungu khas Quizizz */
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* SCREEN CONTAINER (Desktop Friendly - Slide Fix 1280x720) */
+        .quizizz-container {
+            position: relative;
+            width: 1280px;
+            height: 720px;
+            background: #2e1065;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* SLIDE CONTROLLER */
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 40px 60px;
+            transition: all 0.5s ease-in-out;
+        }
+        .slide.active {
+            display: flex;
+        }
+
+        /* BACKGROUND PER SOAL (Sesuai Konsep Materi) */
+        #slide-start {
+            background: radial-gradient(circle, #6d28d9 0%, #4c1d95 100%);
+        }
+        #slide-q1 {
+            /* Karakteristik Fluida - Tema Air Tenang & Ideal */
+            background: linear-gradient(135deg, #1e3a8a 0%, #0d9488 100%);
+        }
+        #slide-q2 {
+            /* Debit Fluida - Tema Air Mengalir Mengisi Wadah */
+            background: linear-gradient(135deg, #0369a1 0%, #0284c7 100%);
+        }
+        #slide-q3 {
+            /* Kontinuitas Konsep - Tema Pipa Menyempit */
+            background: linear-gradient(135deg, #0f766e 0%, #0f172a 100%);
+        }
+        #slide-q4 {
+            /* Kontinuitas Aplikasi - Tema Kebun / Selang Air */
+            background: linear-gradient(135deg, #15803d 0%, #0369a1 100%);
+        }
+        #slide-q5 {
+            /* Bernoulli Konsep - Tema Udara / Aerodinamika Pesawat */
+            background: linear-gradient(135deg, #1e1b4b 0%, #4338ca 100%);
+        }
+        #slide-result {
+            background: radial-gradient(circle, #1e1b4b 0%, #090514 100%);
+        }
+
+        /* HEADER & TIMING BAR */
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            font-family: 'Fredoka', sans-serif;
+        }
+        .quiz-logo {
+            font-size: 28px;
+            color: #facc15;
+            text-shadow: 2px 2px #b45309;
+        }
+        .question-number {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* QUESTION LAYOUT */
+        .question-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .question-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: #facc15;
+            animation: bounce 2s infinite;
+        }
+        .question-text {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 32px;
+            line-height: 1.4;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        /* OPTIONS GRID (2x2 Grid) */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .option-btn {
+            border: none;
+            border-radius: 16px;
+            padding: 25px 30px;
+            font-size: 20px;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            text-align: left;
+            box-shadow: 0 8px 0 rgba(0,0,0,0.2);
+            transition: transform 0.1s, box-shadow 0.1s;
+            position: relative;
+        }
+        .option-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+        }
+        
+        .opt-0 { background-color: #2563eb; border-bottom: 6px solid #1d4ed8; }
+        .opt-1 { background-color: #059669; border-bottom: 6px solid #047857; }
+        .opt-2 { background-color: #d97706; border-bottom: 6px solid #b45309; }
+        .opt-3 { background-color: #db2777; border-bottom: 6px solid #be185d; }
+
+        .option-shape {
+            font-size: 24px;
+            margin-right: 20px;
+            opacity: 0.8;
+            width: 35px;
+            text-align: center;
+        }
+
+        /* OVERLAY FEEDBACK JAWABAN (Benar/Salah Pop-up) */
+        .feedback-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            font-family: 'Fredoka', sans-serif;
+        }
+        .feedback-overlay.correct { background: rgba(4, 120, 87, 0.98); }
+        .feedback-overlay.wrong { background: rgba(185, 28, 28, 0.98); }
+        
+        .feedback-content {
+            text-align: center;
+            max-width: 850px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .feedback-title {
+            font-size: 54px;
+            margin-bottom: 15px;
+        }
+        .feedback-explanation {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 20px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 20px;
+            border-radius: 16px;
+            text-align: left;
+            width: 100%;
+        }
+
+        /* ILUSTRASI GAMBAR / VISUAL DENGAN CSS & ICON */
+        .illustration-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .visual-box {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        /* BENDA CSS UNTUK ILUSTRASI */
+        .pipe-visual {
+            display: flex;
+            align-items: center;
+            background: #cbd5e1;
+            border-radius: 8px;
+            padding: 5px;
+            border: 2px solid #64748b;
+        }
+        .pipe-wide { width: 80px; height: 50px; background: #38bdf8; border-radius: 6px 0 0 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; }
+        .pipe-narrow { width: 80px; height: 20px; background: #0284c7; border-radius: 0 6px 6px 0; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; }
+
+        /* START & RESULT COMPONENT */
+        .btn-start, .btn-next {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 22px;
+            background: #facc15;
+            color: #2e1065;
+            border: none;
+            padding: 12px 45px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #ca8a04;
+            transition: 0.2s;
+        }
+        .btn-start:hover, .btn-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #ca8a04;
+        }
+        .score-box {
+            background: rgba(255, 255, 255, 0.1);
+            border: 4px solid #facc15;
+            border-radius: 24px;
+            padding: 30px;
+            margin: 20px 0;
+            width: 350px;
+        }
+        .score-number {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 84px;
+            color: #4ade80;
+        }
+
+        /* ANIMASI BUMPINESS */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="quizizz-container">
+
+    <div class="feedback-overlay" id="feedback-screen">
+        <div class="feedback-content">
+            <div class="feedback-title" id="feedback-title">MANTAP! 🚀</div>
+            
+            <div class="illustration-container" id="feedback-illustration"></div>
+            
+            <div class="feedback-explanation" id="feedback-explanation">Penjelasan mekanika di sini...</div>
+            <button class="btn-next" onclick="closeFeedback()">Lanjut Ke Soal Berikutnya <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+    </div>
+
+    <div class="slide active" id="slide-start">
+        <div class="quiz-header">
+            <div class="quiz-logo"><i class="fa-solid fa-bolt"></i> QUIZIZZ FISIKA</div>
+        </div>
+        <div class="question-container">
+            <div class="question-icon" style="color: #4ade80;"><i class="fa-solid fa-water"></i></div>
+            <h1>Kuis Seru: Fluida Dinamis</h1>
+            <p style="margin-top: 15px; font-size: 24px; color: #ddd;">Siap menaklukkan tantangan bab air mengalir? Yuk, buktikan pemahamanmu!</p>
+        </div>
+        <div style="text-align: center; margin-bottom: 40px;">
+            <button class="btn-start" onclick="changeSlide('start', 'q1')">Mulai Sekarang!</button>
+        </div>
+    </div>
+
+    <div class="slide" id="slide-q1">
+        <div class="quiz-header">
+            <div class="quiz-logo"><i class="fa-solid fa-bolt"></i></div>
+            <div class="question-number">Soal 1 dari 5</div>
+        </div>
+        <div class="question-container">
+            <div class="question-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+            <div class="question-text">Dalam rumus fisika, kita sering mengandaikan air sebagai "fluida ideal" supaya gampang dihitung. Apa sih maksud dari ciri yang bernama **Inkompresibel** itu?</div>
+        </div>
+        <div class="options-grid">
+            <button class="option-btn opt-0" onclick="checkAnswer(1, false)"><span class="option-shape"><i class="fa-solid fa-square"></i></span> Airnya licin banget dan tidak punya gaya gesek sama sekali</button>
+            <button class="option-btn opt-1" onclick="checkAnswer(1, true)"><span class="option-shape"><i class="fa-solid fa-circle"></i></span> Massa jenis dan volumenya selalu tetap walaupun ditekan keras</button>
+            <button class="option-btn opt-2" onclick="checkAnswer(1, false)"><span class="option-shape"><i class="fa-solid fa-triangle-exclamation"></i></span> Aliran airnya selalu berputar-putar membentuk pusaran</button>
+            <button class="option-btn opt-3" onclick="checkAnswer(1, false)"><span class="option-shape"><i class="fa-solid fa-star"></i></span> Jumlah air di dalam wadah bisa berkurang sendiri secara misterius</button>
+        </div>
+    </div>
+
+    <div class="slide" id="slide-q2">
+        <div class="quiz-header">
+            <div class="quiz-logo"><i class="fa-solid fa-bolt"></i></div>
+            <div class="question-number">Soal 2 dari 5</div>
+        </div>
+        <div class="question-container">
+            <div class="question-icon"><i class="fa-solid fa-faucet-drip"></i></div>
+            <div class="question-text">Kamu sedang mengisi ember kosong berkapasitas **30 Liter** sampai penuh menggunakan keran air. Jika waktu yang dibutuhkan adalah **10 detik**, berapa nilai debit airnya?</div>
+        </div>
+        <div class="options-grid">
+            <button class="option-btn opt-0" onclick="checkAnswer(2, false)"><span class="option-shape"><i class="fa-solid fa-square"></i></span> tiga ratus Liter tiap detik</button>
+            <button class="option-btn opt-1" onclick="checkAnswer(2, false)"><span class="option-shape"><i class="fa-solid fa-circle"></i></span> nol koma tiga Liter tiap detik</button>
+            <button class="option-btn opt-2" onclick="checkAnswer(2, true)"><span class="option-shape"><i class="fa-solid fa-triangle-exclamation"></i></span> tiga Liter tiap detik</button>
+            <button class="option-btn opt-3" onclick="checkAnswer(2, false)"><span class="option-shape"><i class="fa-solid fa-star"></i></span> dua puluh Liter tiap detik</button>
+        </div>
+    </div>
+
+    <div class="slide" id="slide-q3">
+        <div class="quiz-header">
+            <div class="quiz-logo"><i class="fa-solid fa-bolt"></i></div>
+            <div class="question-number">Soal 3 dari 5</div>
+        </div>
+        <div class="question-container">
+            <div class="question-icon"><i class="fa-solid fa-code-merge"></i></div>
+            <div class="question-text">Bayangkan air mengalir di dalam pipa datar yang awalnya lebar lalu menyempit. Sesuai prinsip kontinuitas, kecepatan air di bagian pipa yang menyempit akan...</div>
+        </div>
+        <div class="options-grid">
+            <button class="option-btn opt-0" onclick="checkAnswer(3, true)"><span class="option-shape"><i class="fa-solid fa-square"></i></span> Bertambah cepat, biar volume air yang lewat setiap detik tetap seimbang</button>
+            <button class="option-btn opt-1" onclick="checkAnswer(3, false)"><span class="option-shape"><i class="fa-solid fa-circle"></i></span> Melambat, karena jalannya macet dan ruangnya makin sempit</button>
+            <button class="option-btn opt-2" onclick="checkAnswer(3, false)"><span class="option-shape"><i class="fa-solid fa-triangle-exclamation"></i></span> Sama saja, karena aliran air dari pusat kerannya tidak diubah</button>
+            <button class="option-btn opt-3" onclick="checkAnswer(3, false)"><span class="option-shape"><i class="fa-solid fa-star"></i></span> Berhenti total akibat menabrak dinding pipa penyempitan</button>
+        </div>
+    </div>
+
+    <div class="slide" id="slide-q4">
+        <div class="quiz-header">
+            <div class="quiz-logo"><i class="fa-solid fa-bolt"></i></div>
+            <div class="question-number">Soal 4 dari 5</div>
+        </div>
+        <div class="question-container">
+            <div class="question-icon"><i class="fa-solid fa-seedling"></i></div>
+            <div class="question-text">Saat menyiram tanaman di halaman, kita sering memencet sebagian ujung selang karet memakai jempol. Mengapa pancaran airnya bisa melesat jadi lebih jauh?</div>
+        </div>
+        <div class="options-grid">
+            <button class="option-btn opt-0" onclick="checkAnswer(4, false)"><span class="option-shape"><i class="fa-solid fa-square"></i></span> Memencet selang menambah jumlah air yang dikirim dari pusat keran</button>
+            <button class="option-btn opt-1" onclick="checkAnswer(4, true)"><span class="option-shape"><i class="fa-solid fa-circle"></i></span> Luas lubang keluar mengecil, memaksa kecepatan air melesat naik</button>
+            <button class="option-btn opt-2" onclick="checkAnswer(4, false)"><span class="option-shape"><i class="fa-solid fa-triangle-exclamation"></i></span> Air di dalam selang massanya berubah menjadi jauh lebih ringan</button>
+            <button class="option-btn opt-3" onclick="checkAnswer(4, false)"><span class="option-shape"><i class="fa-solid fa-star"></i></span> Gaya gravitasi bumi mendadak melemah di sekitar lubang ujung selang</button>
+        </div>
+    </div>
+
+    <div class="slide" id="slide-q5">
+        <div class="quiz-header">
+            <div class="quiz-logo"><i class="fa-solid fa-bolt"></i></div>
+            <div class="question-number">Soal 5 dari 5</div>
+        </div>
+        <div class="question-container">
+            <div class="question-icon"><i class="fa-solid fa-plane"></i></div>
+            <div class="question-text">Hukum Bernoulli menjelaskan alasan mengapa pesawat terbang yang sangat besar bisa terangkat ke angkasa. Inti dari konsep hukum ini menyatakan...</div>
+        </div>
+        <div class="options-grid">
+            <button class="option-btn opt-0" onclick="checkAnswer(5, false)"><span class="option-shape"><i class="fa-solid fa-square"></i></span> Di tempat yang aliran udaranya cepat, tekanannya ikut menjadi sangat tinggi</button>
+            <button class="option-btn opt-1" onclick="checkAnswer(5, false)"><span class="option-shape"><i class="fa-solid fa-circle"></i></span> Kecepatan aliran udara tidak membawa pengaruh apa pun bagi nilai tekanan</button>
+            <button class="option-btn opt-2" onclick="checkAnswer(5, true)"><span class="option-shape"><i class="fa-solid fa-triangle-exclamation"></i></span> Di tempat yang aliran udaranya cepat, tekanannya justru menjadi lebih rendah</button>
+            <button class="option-btn opt-3" onclick="checkAnswer(5, false)"><span class="option-shape"><i class="fa-solid fa-star"></i></span> Udara yang lambat memiliki dorongan energi yang tidak terhingga</button>
+        </div>
+    </div>
+
+    <div class="slide" id="slide-result">
+        <div class="quiz-header">
+            <div class="quiz-logo"><i class="fa-solid fa-trophy" style="color: #facc15;"></i> PAPAN SKOR</div>
+        </div>
+        <div class="question-container">
+            <h1>Kuis Selesai!</h1>
+            <p style="color: #a78bfa; font-size: 20px;">Berikut adalah hasil akhir kompetensimu:</p>
+            
+            <div class="score-box">
+                <div style="font-size: 20px; font-weight: bold; color: #fff;">TOTAL SKOR</div>
+                <div class="score-number" id="final-score">0</div>
+            </div>
+
+            <h2 id="result-comment" style="color: #fff; margin-bottom: 10px;">Luar Biasa!</h2>
+            <p id="result-desc" style="max-width: 600px; color: #cbd5e1; font-size: 18px;">Kamu hebat.</p>
+        </div>
+        <div style="text-align: center; margin-bottom: 40px;">
+            <button class="btn-start" style="background: #a855f7; color: white; box-shadow: 0 6px 0 #7e22ce;" onclick="location.reload()">Main Lagi <i class="fa-solid fa-rotate-right"></i></button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    let score = 0;
+    let currentSlideId = 'start';
+    let nextSlideId = '';
+
+    // Data pembahasan tanpa simbol matematika, dilengkapi kode HTML ilustrasi gambar sederhana
+    const explanations = {
+        1: {
+            correct: "Tepat Sekali! 🎉",
+            wrong: "Kurang Pas! 😮",
+            img: '<div class="visual-box"><i class="fa-solid fa-compress" style="color: #ef4444;"></i> Piston Menekan Air -> <i class="fa-solid fa-glass-water" style="color: #38bdf8;"></i> Ukuran Volume Tetap</div>',
+            text: "Arti kata **Inkompresibel** adalah tidak bisa dimampatkan atau tidak bisa diciutkan. Jadi, mau ditekan sekeras apa pun, isi wadah dan kerapatan massa zat cairnya akan selalu tetap stabil."
+        },
+        2: {
+            correct: "Benar! Perhitunganmu Mantap! 📐",
+            wrong: "Aduh, Salah Hitung! 🧠",
+            img: '<div class="visual-box"><i class="fa-solid fa-bucket" style="color: #f59e0b;"></i> Ember tiga puluh Liter / sepuluh Detik</div>',
+            text: "Mencari nilai debit itu sangat mudah! Kamu tinggal membagi total volume air yang masuk dengan lamanya waktu pengisian. Jadi, tiga puluh liter dibagi sepuluh detik akan menghasilkan angka tiga liter untuk setiap detiknya."
+        },
+        3: {
+            correct: "Keren! Penalaranmu Logis! 💡",
+            wrong: "Kurang Tepat, Sobat! 📉",
+            img: '<div class="pipe-visual"><div class="pipe-wide">Lambat</div><div class="pipe-narrow">Cepat 🔥</div></div>',
+            text: "Berdasarkan aturan aliran fluida, jumlah air yang masuk dan keluar setiap detiknya harus selalu sama. Ketika pipa mengecil dan menyempit, air terpaksa bergerak maju jauh lebih cepat agar tidak terjadi penumpukan atau kemacetan di dalam pipa."
+        },
+        4: {
+            correct: "Hebat! Aplikasi Fisika Nyata! 🌿",
+            wrong: "Yuk Pikirkan Lagi! 😮",
+            img: '<div class="visual-box"><i class="fa-solid fa-hand-pointer" style="color: #10b981;"></i> Lubang Selang Dipencet -> <i class="fa-solid fa-spray-can-sparkles" style="color: #0284c7;"></i> Air Melesat Jauh</div>',
+            text: "Ini adalah kejadian sehari-hari yang membuktikan hukum kelajuan aliran. Saat jempol kamu menutup sebagian lubang selang, kamu sedang memaksa luas jalan keluar air menjadi sempit. Akibatnya, air akan melesat keluar dengan kecepatan yang berkali-kali lipat lebih kencang."
+        },
+        5: {
+            correct: "Juara! Bernoulli Berhasil Dikuasai! ✈️",
+            wrong: "Salah Konsep, Jangan Menyerah! 📘",
+            img: '<div class="visual-box"><i class="fa-solid fa-wind" style="color: #38bdf8;"></i> Udara Cepat Di Atas Sayap = Tekanan Rendah ↓</div>',
+            text: "Aturan utama dalam hukum **Bernoulli** menjelaskan hubungan terbalik yang unik: di area mana pun yang aliran udara atau airnya bergerak sangat cepat, justru tingkat tekanan di tempat tersebut akan mendadak turun menjadi lebih rendah."
+        }
+    };
+
+    function changeSlide(current, next) {
+        document.getElementById(`slide-${current}`).classList.remove('active');
+        document.getElementById(`slide-${next}`).classList.add('active');
+        currentSlideId = next;
+    }
+
+    function checkAnswer(questionNum, isCorrect) {
+        const overlay = document.getElementById('feedback-screen');
+        const title = document.getElementById('feedback-title');
+        const imgContainer = document.getElementById('feedback-illustration');
+        const expText = document.getElementById('feedback-explanation');
+
+        // Mengatur status benar atau salah
+        if (isCorrect) {
+            score += 20;
+            overlay.className = "feedback-overlay correct";
+            title.innerText = explanations[questionNum].correct;
+        } else {
+            overlay.className = "feedback-overlay wrong";
+            title.innerText = explanations[questionNum].wrong;
+        }
+
+        // Memasukkan ilustrasi visual gambar dan teks ulasan tanpa rumus
+        imgContainer.innerHTML = explanations[questionNum].img;
+        expText.innerHTML = explanations[questionNum].text;
+        
+        // Mengarahkan ke slide tujuan berikutnya
+        if (questionNum < 5) {
+            nextSlideId = `q${questionNum + 1}`;
+        } else {
+            nextSlideId = 'result';
+            setupResultScreen();
+        }
+
+        overlay.style.display = 'flex';
+    }
+
+    function closeFeedback() {
+        document.getElementById('feedback-screen').style.display = 'none';
+        changeSlide(currentSlideId, nextSlideId);
+    }
+
+    function setupResultScreen() {
+        document.getElementById('final-score').innerText = score;
+        const comment = document.getElementById('result-comment');
+        const desc = document.getElementById('result-desc');
+
+        if (score === 100) {
+            comment.innerText = "Sempurna! Kamu Master Fluida! 👑";
+            comment.style.color = "#4ade80";
+            desc.innerText = "Hebat sekali! Semua pertanyaan tentang karakteristik, debit, kontinuitas, dan Bernoulli berhasil kamu jawab dengan benar tanpa ada yang meleset!";
+        } else if (score >= 60) {
+            comment.innerText = "Bagus! Hasil yang Mantap! 👍";
+            comment.style.color = "#facc15";
+            desc.innerText = "Pemahaman dasarmu sudah oke banget. Cukup baca kembali ulasan gambar pada soal yang salah tadi agar ingatanmu semakin kuat!";
+        } else {
+            comment.innerText = "Tetap Semangat Belajar! 💪";
+            comment.style.color = "#f87171";
+            desc.innerText = "Jangan menyerah ya! Fisika itu seru kalau dibayangkan lewat kejadian sehari-hari. Yuk, baca ulasannya dan coba ulangi kuisnya.";
+        }
+    }
+</script>
+
+</body>
+</html>
