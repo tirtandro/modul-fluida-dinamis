@@ -519,6 +519,17 @@
             comment.style.color = "#f87171";
             desc.innerText = "Jangan menyerah ya! Fisika itu seru kalau dibayangkan lewat kejadian sehari-hari. Yuk, baca ulasannya dan coba ulangi kuisnya.";
         }
+
+        // Kirim hasil kuis ke halaman induk (parent page)
+        try {
+            window.parent.postMessage({
+                type: 'quiz_completed',
+                score: score / 20,
+                total: 5
+            }, '*');
+        } catch (e) {
+            console.error("Gagal mengirim pesan postMessage ke parent", e);
+        }
     }
 </script>
 

@@ -125,6 +125,30 @@
     resizeCanvas();
   });
 
+  /**
+   * Listen for messages from iframe components (e.g., kuis iframe)
+   */
+  window.addEventListener('message', (e) => {
+    const data = e.data;
+    if (data && data.type === 'quiz_completed') {
+      console.log('Quiz completed received in parent:', data);
+      AppState.kuisScore = data.score;
+      AppState.kuisSubmitted = true;
+      
+      // Save quiz score to DB
+      fetch('/api/quiz', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ score: data.score, total: data.total })
+      })
+      .then(res => res.json())
+      .then(resData => {
+        console.log('Quiz score saved to server:', resData);
+      })
+      .catch(err => console.error('Failed to save quiz score:', err));
+    }
+  });
+
   // --- Game Loop ---
 
   /**
