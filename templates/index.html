@@ -224,15 +224,285 @@
   <!-- Materi Interaktif -->
   <div id="page-MATERI" class="page-container hidden" style="padding-top: 20px;">
     <div class="page-header">Materi: Fluida Dinamis</div>
+    
+    <!-- Responsive styles for tabs and content -->
+    <style>
+      .materi-tabs-bar .tab-btn {
+        padding: 12px 24px;
+        font-weight: bold;
+        font-family: inherit;
+        font-size: 15px;
+        border-radius: 12px;
+        border: none;
+        background: #f1f5f9;
+        color: #475569;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .materi-tabs-bar .tab-btn.active {
+        background: #3b82f6 !important;
+        color: white !important;
+        box-shadow: 0 4px 6px rgba(59,130,246,0.25) !important;
+      }
+      .materi-peta-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        align-items: start;
+        height: 68vh;
+        overflow-y: auto;
+        padding-right: 5px;
+      }
+      @media (max-width: 768px) {
+        .materi-peta-grid {
+          grid-template-columns: 1fr !important;
+          height: 58vh !important;
+        }
+        .materi-tabs-bar .tab-btn {
+          padding: 8px 16px !important;
+          font-size: 13px !important;
+          border-radius: 8px !important;
+        }
+        #materi-tab-canva .card, #materi-tab-tanya .card {
+          height: 58vh !important;
+        }
+      }
+    </style>
+
     <div class="page-content" style="max-width: 1000px; width: 95%;">
-      <div class="card" style="padding: 0; overflow: hidden; height: 75vh; position: relative; border-radius: 24px;">
-        <iframe src="https://www.canva.com/design/DAHLVKGbxx8/D3POSjUTVXie49o3_r_cyw/view?embed" style="width: 100%; height: 100%; border: none;" allowfullscreen></iframe>
+      <!-- Tab Buttons Bar -->
+      <div class="materi-tabs-bar" style="display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap;">
+        <button class="tab-btn active" id="btn-tab-canva" onclick="switchMateriTab('canva')">📚 Slide Presentasi (Canva)</button>
+        <button class="tab-btn" id="btn-tab-peta" onclick="switchMateriTab('peta')">🗺️ Peta Konsep & Rangkuman</button>
+        <button class="tab-btn" id="btn-tab-tanya" onclick="switchMateriTab('tanya')">🤖 Tanya SAINTIKA (Tutor AI)</button>
       </div>
+
+      <!-- Tab 1: Canva Presentation -->
+      <div id="materi-tab-canva" class="materi-tab-content">
+        <div class="card" style="padding: 0; overflow: hidden; height: 68vh; position: relative; border-radius: 24px; border: 1px solid #cbd5e1;">
+          <iframe src="https://www.canva.com/design/DAHLVKGbxx8/D3POSjUTVXie49o3_r_cyw/view?embed" style="width: 100%; height: 100%; border: none;" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <!-- Tab 2: Peta Konsep & Rangkuman -->
+      <div id="materi-tab-peta" class="materi-tab-content hidden">
+        <div class="materi-peta-grid">
+          <!-- Left Column: Peta Konsep Image -->
+          <div class="card" style="padding: 16px; border-radius: 24px; border: 1px solid #cbd5e1; background: #f8fafc; text-align: center;">
+            <h4 style="margin-bottom: 12px; color: #1e293b; font-weight: bold; font-size: 16px;">🗺️ Peta Konsep Fluida Dinamis</h4>
+            <div style="position: relative; cursor: zoom-in; overflow: hidden; border-radius: 16px; border: 1px solid #cbd5e1;" onclick="openPetaLightbox()">
+              <img src="/static/images/peta-konsep.jpg" alt="Peta Konsep Fluida Dinamis" style="width: 100%; height: auto; display: block; max-height: 48vh; object-fit: contain; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+              <div style="position: absolute; bottom: 10px; right: 10px; background: rgba(15,23,42,0.8); color: white; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold;"><i class="fa-solid fa-magnifying-glass-plus"></i> Klik untuk Memperbesar</div>
+            </div>
+          </div>
+          <!-- Right Column: Rangkuman -->
+          <div class="card" style="padding: 24px; border-radius: 24px; border: 1px solid #cbd5e1; background: #ffffff;">
+            <h3 style="color: #3b82f6; margin-bottom: 15px; border-bottom: 2px solid #3b82f6; padding-bottom: 8px; font-weight: bold; font-size: 18px;">📝 Rangkuman Materi</h3>
+            <div class="rangkuman-body" style="color: #334155; line-height: 1.6; font-size: 14px; text-align: left;">
+              <p style="background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px; border-radius: 0 8px 8px 0; font-style: italic; margin-bottom: 16px; color: #1d4ed8;">
+                "Fluida dinamis mempelajari fluida yang bergerak (mengalir). Perilakunya dapat dijelaskan melalui persamaan kontinuitas dan persamaan Bernoulli serta banyak dimanfaatkan dalam teknologi dan kehidupan sehari-hari."
+              </p>
+              <h4 style="color: #0f172a; margin-top: 15px; margin-bottom: 6px; font-weight: bold; font-size: 15px;">1. Pengertian & Asumsi Fluida Ideal</h4>
+              <ul style="padding-left: 20px; margin-bottom: 12px;">
+                <li><strong>Tidak kental (viskositas = 0):</strong> Tidak ada gesekan antara lapisan fluida.</li>
+                <li><strong>Tidak mampat (inkompresibel):</strong> Kerapatan massa (massa jenis) dan volume tetap meskipun ditekan.</li>
+                <li><strong>Aliran tunak (steady):</strong> Kecepatan aliran fluida di setiap titik konstan terhadap waktu.</li>
+                <li><strong>Aliran berputar (laminar):</strong> Aliran fluida tenang dan teratur, tidak membentuk pusaran (irrotasional).</li>
+              </ul>
+              <h4 style="color: #0f172a; margin-top: 15px; margin-bottom: 6px; font-weight: bold; font-size: 15px;">2. Besaran Fisis Utama</h4>
+              <ul style="padding-left: 20px; margin-bottom: 12px;">
+                <li><strong>Debit aliran (Q):</strong> Banyaknya volume air/fluida yang mengalir tiap satuan waktu. Rumus: <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #2563eb; font-weight: bold; font-family: monospace;">Q = V / t = A · v</code></li>
+                <li><strong>Kecepatan aliran (v):</strong> Kelajuan gerak fluida pada lintasan tertentu.</li>
+                <li><strong>Luas penampang (A):</strong> Luas lubang/pipa lintasan tempat fluida mengalir.</li>
+              </ul>
+              <h4 style="color: #0f172a; margin-top: 15px; margin-bottom: 6px; font-weight: bold; font-size: 15px;">3. Hukum-Hukum Utama</h4>
+              <ul style="padding-left: 20px; margin-bottom: 12px;">
+                <li><strong>Asas Kontinuitas:</strong> Menyatakan debit aliran di penampang mana pun selalu konstan. <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #2563eb; font-weight: bold; font-family: monospace;">A₁v₁ = A₂v₂</code>. Makin sempit pipa, makin melesat cepat aliran fluidanya.</li>
+                <li><strong>Persamaan Bernoulli:</strong> Pernyataan kekekalan energi pada aliran fluida. Di tempat yang kelajuan fluidanya tinggi, justru tekanannya akan mendadak rendah. <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #2563eb; font-weight: bold; font-family: monospace;">P + ½ρv² + ρgh = Konstan</code>.</li>
+              </ul>
+              <h4 style="color: #0f172a; margin-top: 15px; margin-bottom: 6px; font-weight: bold; font-size: 15px;">4. Penerapan dalam Kehidupan Sehari-hari</h4>
+              <ul style="padding-left: 20px; margin-bottom: 12px;">
+                <li><strong>Sayap Pesawat Terbang:</strong> Airfoil membuat udara di atas sayap melesat lebih cepat (tekanan rendah), sedangkan di bawah sayap lambat (tekanan tinggi). Perbedaan tekanan menghasilkan gaya angkat (*lift*).</li>
+                <li><strong>Penyemprot Parfum & Karburator:</strong> Aliran udara kencang di ujung pipa menghisap cairan parfum/bensin ke atas dan menyemburkannya sebagai kabut.</li>
+                <li><strong>Venturimeter:</strong> Alat untuk mengukur kelajuan fluida dalam pipa menggunakan perbedaan ketinggian cairan.</li>
+                <li><strong>Tabung Pitot:</strong> Mengukur kelajuan aliran gas/udara dengan lubang sensor tekanan statis dan dinamis.</li>
+                <li><strong>Cerobong Asap:</strong> Udara bertiup kencang di mulut atas cerobong membuat tekanan rendah, menghisap asap tungku ke luar dengan lancar.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: AI Chatbot SAINTIKA -->
+      <div id="materi-tab-tanya" class="materi-tab-content hidden">
+        <div class="card" style="padding: 24px; border-radius: 24px; border: 1px solid #cbd5e1; background: #ffffff; height: 68vh; display: flex; flex-direction: column;">
+          <div style="display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 12px;">
+            <div style="font-size: 36px;">🤖</div>
+            <div style="text-align: left;">
+              <h4 style="margin: 0; color: #0f172a; font-size: 16px; font-weight: bold;">Tanya SAINTIKA</h4>
+              <p style="margin: 0; color: #64748b; font-size: 12px;">Tutor AI Fisika Virtual Anda — Tanyakan apapun tentang materi Fluida Dinamis!</p>
+            </div>
+          </div>
+          <div id="tab-chat-history" style="flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; border: 1px solid #cbd5e1; border-radius: 16px; background: #f8fafc; margin-bottom: 12px;">
+            <!-- Chat history will be dynamically loaded here -->
+          </div>
+          <div style="display: flex; gap: 8px; border-top: 1px solid #e2e8f0; padding-top: 12px;">
+            <input type="text" id="tab-chat-input" placeholder="Ketik pertanyaan Anda tentang Fluida Dinamis di sini... (misal: Mengapa sayap pesawat bisa mengangkat bodi seberat itu?)" onkeypress="if(event.key === 'Enter') sendTabChatMessage()" style="flex: 1; border: 1px solid #cbd5e1; border-radius: 12px; padding: 14px 18px; outline: none; font-family: inherit; font-size: 14px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);">
+            <button onclick="startVoiceRecognition('tab-chat-input', window.sendTabChatMessage)" style="background: #f1f5f9; color: #3b82f6; font-size: 20px; padding: 0 16px; border: 1px solid #cbd5e1; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">🎤</button>
+            <button onclick="sendTabChatMessage()" style="background: #3b82f6; color: white; border: none; padding: 0 24px; border-radius: 12px; cursor: pointer; font-weight: bold; font-family: inherit; font-size: 14px; transition: all 0.2s; box-shadow: 0 4px 6px rgba(59,130,246,0.25);">Kirim 🚀</button>
+          </div>
+        </div>
+      </div>
+
       <div class="nav-buttons-container">
         <button class="btn btn-secondary" onclick="AppState.setState('MENU')">🏠 Kembali</button>
         <button class="btn btn-primary" onclick="AppState.setState('SIMULASI')">Ke Simulasi ▶</button>
       </div>
     </div>
+
+    <!-- Lightbox Modal Peta Konsep -->
+    <div id="peta-lightbox" class="overlay hidden" style="background: rgba(15,23,42,0.95); z-index: 9999; display: none;" onclick="closePetaLightbox()">
+      <button style="position: absolute; top: 20px; right: 30px; background: #ef4444; color: white; border: none; padding: 12px 24px; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: bold; box-shadow: 0 4px 10px rgba(239,68,68,0.3); transition: transform 0.2s; z-index: 10000;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">Tutup ❌</button>
+      <div style="max-width: 95vw; max-height: 90vh; display: flex; justify-content: center; align-items: center;" onclick="event.stopPropagation()">
+        <img src="/static/images/peta-konsep.jpg" alt="Peta Konsep Fluida Dinamis" style="max-width: 100%; max-height: 90vh; object-fit: contain; border-radius: 16px; border: 4px solid white; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
+      </div>
+    </div>
+
+    <!-- Javascript tab & lightbox controllers -->
+    <script>
+      function switchMateriTab(tabName) {
+        // Hide all tab contents
+        document.querySelectorAll('.materi-tab-content').forEach(el => el.classList.add('hidden'));
+        // Show active tab content
+        document.getElementById('materi-tab-' + tabName).classList.remove('hidden');
+        
+        // Remove active class from all tab buttons
+        document.querySelectorAll('.materi-tabs-bar .tab-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        
+        // Add active class to selected tab button
+        const activeBtn = document.getElementById('btn-tab-' + tabName);
+        if (activeBtn) {
+          activeBtn.classList.add('active');
+        }
+        
+        // Special action for chat tab: populate history and scroll
+        if (tabName === 'tanya') {
+          setTimeout(() => {
+            updateTabChatUI();
+          }, 50);
+        }
+      }
+
+      function openPetaLightbox() {
+        const lightbox = document.getElementById('peta-lightbox');
+        if (lightbox) {
+          lightbox.style.display = 'flex';
+          lightbox.classList.remove('hidden');
+        }
+      }
+
+      function closePetaLightbox() {
+        const lightbox = document.getElementById('peta-lightbox');
+        if (lightbox) {
+          lightbox.style.display = 'none';
+          lightbox.classList.add('hidden');
+        }
+      }
+
+      function sendTabChatMessage() {
+        const input = document.getElementById('tab-chat-input');
+        if (!input) return;
+        const msg = input.value.trim();
+        if (!msg) return;
+        
+        const chatHistory = (window.Pages && window.Pages.MATERI && window.Pages.MATERI.chatHistory)
+          ? window.Pages.MATERI.chatHistory
+          : [];
+          
+        chatHistory.push({ role: 'user', content: msg });
+        input.value = '';
+        
+        updateTabChatUI();
+        
+        // Show thinking status
+        const historyDiv = document.getElementById('tab-chat-history');
+        if (historyDiv) {
+          historyDiv.innerHTML += `
+            <div id="tab-chat-loading" style="align-self: flex-start; background: #e0f2fe; padding: 12px; border-radius: 12px; border-bottom-left-radius: 0; max-width: 80%; color: #0f172a; font-style: italic; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+              🤖 SAINTIKA sedang berpikir...
+            </div>
+          `;
+          historyDiv.scrollTop = historyDiv.scrollHeight;
+        }
+        
+        fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: chatHistory })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.response) {
+            chatHistory.push({ role: 'assistant', content: data.response });
+            if (window.speakText) window.speakText(data.response);
+          } else {
+            chatHistory.push({ role: 'assistant', content: "Maaf, terjadi kesalahan: " + (data.error || "Unknown error") });
+          }
+          updateTabChatUI();
+          if (window.updateFloatingChatUI) window.updateFloatingChatUI();
+        })
+        .catch(err => {
+          chatHistory.push({ role: 'assistant', content: "Maaf, gagal terhubung ke server." });
+          updateTabChatUI();
+        });
+      }
+
+      function updateTabChatUI() {
+        const historyDiv = document.getElementById('tab-chat-history');
+        if (!historyDiv) return;
+        
+        let html = `
+          <div style="align-self: flex-start; background: #e0f2fe; padding: 12px; border-radius: 12px; border-bottom-left-radius: 0; max-width: 80%; color: #0f172a; box-shadow: 0 1px 3px rgba(0,0,0,0.1); line-height: 1.5;">
+            <strong>🤖 SAINTIKA:</strong><br/>Halo! Saya SAINTIKA, Tutor Fisika Virtual Anda. Ada yang ingin ditanyakan tentang Fluida Dinamis?
+          </div>
+        `;
+        
+        const formatMsg = (text) => {
+          let formatted = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+          formatted = formatted.replace(/\*(.*?)\*/g, '<em>$1</em>');
+          formatted = formatted.replace(/\n/g, '<br/>');
+          return formatted;
+        };
+        
+        const chatHistory = (window.Pages && window.Pages.MATERI && window.Pages.MATERI.chatHistory)
+          ? window.Pages.MATERI.chatHistory
+          : [];
+          
+        chatHistory.forEach(msg => {
+          if (msg.role === 'user') {
+            html += `
+              <div style="align-self: flex-end; background: #3b82f6; padding: 12px; border-radius: 12px; border-bottom-right-radius: 0; max-width: 80%; color: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); line-height: 1.5;">
+                <strong>Anda:</strong><br/>${formatMsg(msg.content)}
+              </div>
+            `;
+          } else if (msg.role === 'assistant') {
+            html += `
+              <div style="align-self: flex-start; background: #e0f2fe; padding: 12px; border-radius: 12px; border-bottom-left-radius: 0; max-width: 80%; color: #0f172a; box-shadow: 0 1px 3px rgba(0,0,0,0.1); line-height: 1.5;">
+                <strong>🤖 SAINTIKA:</strong><br/>${formatMsg(msg.content)}
+              </div>
+            `;
+          }
+        });
+        
+        historyDiv.innerHTML = html;
+        historyDiv.scrollTop = historyDiv.scrollHeight;
+        
+        const input = document.getElementById('tab-chat-input');
+        if (input) input.focus();
+      }
+    </script>
   </div>
 
   <!-- Video Pembuka Kuis -->
@@ -371,7 +641,7 @@
 
   <!-- Global Footer -->
   <div id="app-footer">
-    Tim Pengembang: Yuli Estrian &bull; Rani Kusfiana &bull; Tirtandro Meda &bull; Yusfriana Yanuarti Windarto
+    Tim Pengembang: Yuli Estrian &bull; Rani Kusfiana &bull; Tirtandro Meda &bull; Yusfrina Yanuarti Windarto
   </div>
 
   <!-- Overlay for iframe-based content (videos, external resources) -->
