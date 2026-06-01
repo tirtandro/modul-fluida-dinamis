@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify, session, g
 import os
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from dotenv import load_dotenv
 from groq import Groq
 
@@ -146,7 +146,8 @@ def update_progress():
 
     db = get_db()
     cursor = db.cursor()
-    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    gmt_plus_7 = timezone(timedelta(hours=7))
+    now = datetime.now(gmt_plus_7).strftime('%Y-%m-%d %H:%M:%S')
 
     cursor.execute("SELECT user_id FROM progress WHERE user_id = ?", (user_id,))
     if cursor.fetchone():
@@ -170,7 +171,8 @@ def save_quiz():
 
     db = get_db()
     cursor = db.cursor()
-    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    gmt_plus_7 = timezone(timedelta(hours=7))
+    now = datetime.now(gmt_plus_7).strftime('%Y-%m-%d %H:%M:%S')
 
     cursor.execute("INSERT INTO quiz_scores (user_id, score, total, date) VALUES (?, ?, ?, ?)", 
                    (user_id, score, total, now))
