@@ -7,9 +7,11 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-  <!-- Background Videos -->
-  <video id="bg-video" autoplay loop muted playsinline src="/static/videos/cover-bg.mp4"></video>
-  <video id="menu-bg-video" autoplay loop muted playsinline src="/static/videos/menu-bg.mp4"></video>
+  <!-- Background Image -->
+  <img id="bg-image" src="/static/images/classroom-bg.jpg" alt="Background">
+  <!-- Keep hidden video elements for JS compatibility -->
+  <video id="bg-video" autoplay loop muted playsinline style="display:none"></video>
+  <video id="menu-bg-video" autoplay loop muted playsinline style="display:none"></video>
 
   <!-- CANVAS ENGINE PAGES (COVER & SIMULASI) -->
   <div id="canvas-container" class="page-container">
